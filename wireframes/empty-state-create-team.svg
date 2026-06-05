@@ -1,0 +1,116 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 580" font-family="system-ui, -apple-system, sans-serif" role="img" aria-label="Empty state and create team flow">
+  <style>
+    .bg { fill: #f4f4f5; }
+    .panel { fill: #fff; stroke: #d4d4d8; stroke-width: 0.5; }
+    .surface-2 { fill: #f4f4f5; }
+    .surface-info { fill: #eff6ff; }
+    .label { font-size: 9px; fill: #71717a; text-transform: uppercase; letter-spacing: 0.05em; }
+    .title { font-size: 18px; fill: #18181b; font-weight: 500; }
+    .subtitle { font-size: 14px; fill: #18181b; font-weight: 500; }
+    .body { font-size: 12px; fill: #52525b; }
+    .hint { font-size: 11px; fill: #71717a; }
+    .field { fill: #fafafa; stroke: #e4e4e7; stroke-width: 0.5; }
+    .field-active { fill: #fff; stroke: #a1a1aa; stroke-width: 0.5; }
+    .field-text { font-size: 12px; fill: #a1a1aa; }
+    .field-text-active { font-size: 12px; fill: #18181b; }
+    .field-label { font-size: 11px; fill: #52525b; }
+    .primary { fill: #eff6ff; stroke: #93c5fd; stroke-width: 0.5; }
+    .primary-text { font-size: 13px; fill: #1d4ed8; font-weight: 500; }
+    .divider { stroke: #e4e4e7; stroke-width: 0.5; }
+    .icon-circle { fill: #f4f4f5; }
+    .card { fill: #fff; stroke: #e4e4e7; stroke-width: 0.5; }
+    .card-primary { fill: #eff6ff; stroke: #93c5fd; stroke-width: 0.5; }
+    .mono { font-family: 'SF Mono', Menlo, monospace; font-size: 18px; fill: #18181b; font-weight: 500; letter-spacing: 0.18em; }
+    .code-bg { fill: #f4f4f5; }
+  </style>
+  <rect class="bg" x="0" y="0" width="900" height="580"/>
+
+  <!-- Empty state / welcome -->
+  <g transform="translate(20, 20)">
+    <rect class="panel" x="0" y="0" width="420" height="540" rx="8"/>
+    <text class="label" x="16" y="22">Welcome / no team yet</text>
+
+    <!-- Top bar -->
+    <text class="subtitle" x="16" y="50">CourtVision</text>
+    <circle cx="392" cy="44" r="14" fill="#eff6ff"/>
+    <text x="392" y="49" text-anchor="middle" font-size="11" font-weight="500" fill="#1d4ed8">CP</text>
+    <line class="divider" x1="16" y1="68" x2="404" y2="68"/>
+
+    <!-- Welcome block -->
+    <circle class="icon-circle" cx="210" cy="140" r="32"/>
+    <rect x="195" y="125" width="30" height="36" rx="3" fill="none" stroke="#52525b" stroke-width="1.4"/>
+    <line x1="200" y1="135" x2="220" y2="135" stroke="#52525b" stroke-width="1"/>
+    <line x1="200" y1="143" x2="220" y2="143" stroke="#52525b" stroke-width="1"/>
+    <line x1="200" y1="151" x2="216" y2="151" stroke="#52525b" stroke-width="1"/>
+
+    <text class="title" x="210" y="198" text-anchor="middle">Welcome, Coach Patel</text>
+    <text class="body" x="210" y="222" text-anchor="middle">Let's get your team set up so you can</text>
+    <text class="body" x="210" y="240" text-anchor="middle">start building plays.</text>
+
+    <!-- Create team card -->
+    <rect class="card-primary" x="16" y="278" width="388" height="86" rx="8"/>
+    <circle cx="40" cy="321" r="14" fill="#dbeafe"/>
+    <text x="40" y="326" text-anchor="middle" font-size="18" fill="#1d4ed8" font-weight="500">+</text>
+    <text x="66" y="312" font-size="13" font-weight="500" fill="#1d4ed8">Create a team</text>
+    <text x="66" y="332" font-size="11" fill="#1d4ed8" opacity="0.75">Recommended for coaches</text>
+    <text x="384" y="326" text-anchor="end" font-size="16" fill="#1d4ed8">›</text>
+
+    <!-- Join team card -->
+    <rect class="card" x="16" y="380" width="388" height="86" rx="8"/>
+    <circle cx="40" cy="423" r="14" fill="#f4f4f5"/>
+    <g transform="translate(34, 417)">
+      <circle cx="4" cy="2" r="2" fill="none" stroke="#52525b" stroke-width="1.2"/>
+      <circle cx="9" cy="2" r="2" fill="none" stroke="#52525b" stroke-width="1.2"/>
+      <path d="M 0 12 Q 0 7, 4 7 Q 8 7, 8 12" fill="none" stroke="#52525b" stroke-width="1.2"/>
+      <path d="M 5 12 Q 5 7, 9 7 Q 13 7, 13 12" fill="none" stroke="#52525b" stroke-width="1.2"/>
+    </g>
+    <text x="66" y="414" font-size="13" font-weight="500" fill="#18181b">Join a team</text>
+    <text x="66" y="434" font-size="11" fill="#52525b">For players or assistants with a code</text>
+    <text x="384" y="428" text-anchor="end" font-size="16" fill="#a1a1aa">›</text>
+  </g>
+
+  <!-- Create team -->
+  <g transform="translate(460, 20)">
+    <rect class="panel" x="0" y="0" width="420" height="540" rx="8"/>
+    <text class="label" x="16" y="22">Create team / step 1 of 1</text>
+
+    <!-- Header -->
+    <text x="16" y="58" font-size="16" fill="#52525b">←</text>
+    <text class="subtitle" x="36" y="56">Create a team</text>
+
+    <text class="body" x="16" y="88">You'll be the coach. You can invite players right after.</text>
+
+    <!-- Form -->
+    <text class="field-label" x="16" y="124">Team name</text>
+    <rect class="field-active" x="16" y="132" width="388" height="34" rx="6"/>
+    <text class="field-text-active" x="26" y="153">Lincoln Eagles</text>
+
+    <text class="field-label" x="16" y="190">Season</text>
+    <rect class="field" x="16" y="198" width="186" height="34" rx="6"/>
+    <text class="field-text" x="26" y="219">2025–26</text>
+    <text x="194" y="219" text-anchor="end" font-size="11" fill="#52525b">›</text>
+
+    <text class="field-label" x="218" y="190">Level (optional)</text>
+    <rect class="field" x="218" y="198" width="186" height="34" rx="6"/>
+    <text class="field-text" x="228" y="219">High school</text>
+    <text x="396" y="219" text-anchor="end" font-size="11" fill="#52525b">›</text>
+
+    <!-- Invite code section -->
+    <rect class="code-bg" x="16" y="266" width="388" height="100" rx="8"/>
+    <text class="field-label" x="32" y="290">Invite code (auto-generated)</text>
+    <text class="mono" x="32" y="324">A7K2P9</text>
+    <g transform="translate(348, 312)" fill="none" stroke="#71717a" stroke-width="1.2">
+      <path d="M 1 6 A 5 5 0 1 1 6 11" />
+      <path d="M 6 11 L 6 8 M 6 11 L 9 11" />
+    </g>
+    <g transform="translate(376, 312)" fill="none" stroke="#52525b" stroke-width="1.2">
+      <rect x="0" y="0" width="9" height="11" rx="1"/>
+      <rect x="-2" y="-2" width="9" height="11" rx="1" fill="#f4f4f5"/>
+    </g>
+    <text class="hint" x="32" y="354">Share this with your players so they can join.</text>
+
+    <!-- Submit -->
+    <rect class="primary" x="16" y="394" width="388" height="40" rx="6"/>
+    <text class="primary-text" x="210" y="419" text-anchor="middle">Create team</text>
+  </g>
+</svg>

@@ -1,0 +1,121 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 480" font-family="system-ui, -apple-system, sans-serif" role="img" aria-label="Auth entry screens: sign in, create account, join team">
+  <style>
+    .bg { fill: #f4f4f5; }
+    .panel { fill: #fff; stroke: #d4d4d8; stroke-width: 0.5; }
+    .surface-2 { fill: #fafafa; }
+    .surface-info { fill: #eff6ff; }
+    .label { font-size: 9px; fill: #71717a; text-transform: uppercase; letter-spacing: 0.05em; }
+    .title { font-size: 17px; fill: #18181b; font-weight: 500; }
+    .body { font-size: 12px; fill: #52525b; }
+    .hint { font-size: 11px; fill: #71717a; }
+    .field { fill: #fafafa; stroke: #e4e4e7; stroke-width: 0.5; }
+    .field-text { font-size: 11px; fill: #a1a1aa; }
+    .field-label { font-size: 11px; fill: #52525b; }
+    .primary { fill: #eff6ff; stroke: #93c5fd; stroke-width: 0.5; }
+    .primary-text { font-size: 13px; fill: #1d4ed8; font-weight: 500; }
+    .link { font-size: 11px; fill: #2563eb; }
+    .divider { stroke: #e4e4e7; stroke-width: 0.5; }
+    .code-cell { fill: #fff; stroke: #a1a1aa; stroke-width: 0.5; }
+    .code-active { fill: #eff6ff; stroke: #93c5fd; stroke-width: 0.5; }
+    .code-char { font-size: 17px; fill: #18181b; font-weight: 500; text-anchor: middle; }
+  </style>
+  <rect class="bg" x="0" y="0" width="900" height="480"/>
+
+  <!-- Sign in -->
+  <g transform="translate(20, 20)">
+    <rect class="panel" x="0" y="0" width="270" height="440" rx="8"/>
+    <text class="label" x="16" y="22">Sign in</text>
+    <text class="title" x="16" y="52">CourtVision</text>
+    <text class="body" x="16" y="72">Welcome back.</text>
+
+    <text class="field-label" x="16" y="106">Email</text>
+    <rect class="field" x="16" y="114" width="238" height="32" rx="6"/>
+    <text class="field-text" x="26" y="134">coach@school.edu</text>
+
+    <text class="field-label" x="16" y="166">Password</text>
+    <rect class="field" x="16" y="174" width="238" height="32" rx="6"/>
+    <text class="field-text" x="26" y="194">••••••••</text>
+
+    <text class="link" x="254" y="226" text-anchor="end">Forgot password?</text>
+
+    <rect class="primary" x="16" y="244" width="238" height="36" rx="6"/>
+    <text class="primary-text" x="135" y="267" text-anchor="middle">Sign in</text>
+
+    <text class="hint" x="135" y="304" text-anchor="middle">New here? <tspan fill="#2563eb">Create account</tspan></text>
+
+    <line class="divider" x1="16" y1="330" x2="254" y2="330"/>
+    <text class="hint" x="135" y="354" text-anchor="middle">Player joining a team?</text>
+    <rect class="field" x="16" y="368" width="238" height="32" rx="6"/>
+    <text x="135" y="388" text-anchor="middle" font-size="12" fill="#52525b">Enter team code</text>
+  </g>
+
+  <!-- Create account -->
+  <g transform="translate(315, 20)">
+    <rect class="panel" x="0" y="0" width="270" height="440" rx="8"/>
+    <text class="label" x="16" y="22">Create account</text>
+    <text class="title" x="16" y="52">CourtVision</text>
+    <text class="body" x="16" y="72">Start your playbook.</text>
+
+    <text class="field-label" x="16" y="106">Your name</text>
+    <rect class="field" x="16" y="114" width="238" height="32" rx="6"/>
+    <text class="field-text" x="26" y="134">Coach Patel</text>
+
+    <text class="field-label" x="16" y="166">Email</text>
+    <rect class="field" x="16" y="174" width="238" height="32" rx="6"/>
+    <text class="field-text" x="26" y="194">coach@school.edu</text>
+
+    <text class="field-label" x="16" y="226">Password</text>
+    <rect class="field" x="16" y="234" width="238" height="32" rx="6"/>
+    <text class="field-text" x="26" y="254">at least 8 characters</text>
+
+    <text class="hint" x="16" y="290">By continuing you agree to the</text>
+    <text class="hint" x="16" y="306"><tspan fill="#2563eb">Terms</tspan> and <tspan fill="#2563eb">Privacy</tspan>.</text>
+
+    <rect class="primary" x="16" y="328" width="238" height="36" rx="6"/>
+    <text class="primary-text" x="135" y="351" text-anchor="middle">Create account</text>
+
+    <text class="hint" x="135" y="388" text-anchor="middle">Have an account? <tspan fill="#2563eb">Sign in</tspan></text>
+  </g>
+
+  <!-- Join team -->
+  <g transform="translate(610, 20)">
+    <rect class="panel" x="0" y="0" width="270" height="440" rx="8"/>
+    <text class="label" x="16" y="22">Join a team</text>
+    <text class="title" x="16" y="52">Enter team code</text>
+    <text class="body" x="16" y="72">Get this from your coach.</text>
+
+    <g transform="translate(40, 94)">
+      <rect class="code-cell" x="0" y="0" width="30" height="40" rx="6"/>
+      <text class="code-char" x="15" y="27">A</text>
+      <rect class="code-cell" x="34" y="0" width="30" height="40" rx="6"/>
+      <text class="code-char" x="49" y="27">7</text>
+      <rect class="code-cell" x="68" y="0" width="30" height="40" rx="6"/>
+      <text class="code-char" x="83" y="27">K</text>
+      <rect class="code-cell" x="102" y="0" width="30" height="40" rx="6"/>
+      <text class="code-char" x="117" y="27">2</text>
+      <rect class="code-cell" x="136" y="0" width="30" height="40" rx="6"/>
+      <text class="code-char" x="151" y="27">P</text>
+      <rect class="code-active" x="170" y="0" width="30" height="40" rx="6"/>
+      <text class="code-char" x="185" y="27" fill="#a1a1aa">|</text>
+    </g>
+
+    <text class="hint" x="135" y="156" text-anchor="middle">6 characters · letters and numbers</text>
+
+    <line class="divider" x1="16" y1="174" x2="254" y2="174"/>
+
+    <text class="field-label" x="16" y="198">Your name</text>
+    <rect class="field" x="16" y="206" width="238" height="32" rx="6"/>
+    <text class="field-text" x="26" y="226">As shown to your coach</text>
+
+    <text class="field-label" x="16" y="258">Email</text>
+    <rect class="field" x="16" y="266" width="238" height="32" rx="6"/>
+    <text class="field-text" x="26" y="286">you@email.com</text>
+
+    <text class="field-label" x="16" y="318">Password</text>
+    <rect class="field" x="16" y="326" width="238" height="32" rx="6"/>
+    <text class="field-text" x="26" y="346">at least 8 characters</text>
+
+    <rect class="primary" x="16" y="376" width="238" height="36" rx="6"/>
+    <text class="primary-text" x="135" y="399" text-anchor="middle">Join team</text>
+  </g>
+</svg>

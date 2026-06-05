@@ -1,0 +1,168 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 880" font-family="system-ui, -apple-system, sans-serif" role="img" aria-label="Play viewer mobile wireframe">
+  <style>
+    .bg { fill: #f4f4f5; }
+    .phone { fill: #fff; stroke: #d4d4d8; stroke-width: 0.5; }
+    .surface-2 { fill: #f4f4f5; }
+    .surface-3 { fill: #fafafa; }
+    .surface-info { fill: #eff6ff; }
+    .divider { stroke: #e4e4e7; stroke-width: 0.5; }
+    .label { font-size: 9px; fill: #71717a; text-transform: uppercase; letter-spacing: 0.05em; }
+    .title { font-size: 17px; fill: #18181b; font-weight: 500; }
+    .body { font-size: 13px; fill: #18181b; }
+    .body-2 { font-size: 12px; fill: #52525b; }
+    .body-3 { font-size: 11px; fill: #71717a; }
+    .hint { font-size: 10px; fill: #a1a1aa; }
+    .pill-info-fill { fill: #eff6ff; }
+    .pill-info-text { font-size: 10px; fill: #1d4ed8; }
+    .pill-neutral { fill: #f4f4f5; }
+    .pill-neutral-text { font-size: 10px; fill: #52525b; }
+    .court-bg { fill: #f4f4f5; }
+    .court-line { fill: none; stroke: #a1a1aa; stroke-width: 0.4; opacity: 0.5; }
+    .court-line-strong { fill: none; stroke: #71717a; stroke-width: 0.5; opacity: 0.7; }
+    .player-node { fill: #fff; stroke: #52525b; stroke-width: 0.5; }
+    .player-active { fill: #eff6ff; stroke: #1d4ed8; stroke-width: 0.7; }
+    .player-text { font-size: 3.4px; fill: #18181b; text-anchor: middle; }
+    .player-text-active { font-size: 3.4px; fill: #1d4ed8; text-anchor: middle; font-weight: 500; }
+    .ball { fill: #d97706; }
+    .timeline-track { fill: #e4e4e7; }
+    .timeline-fill { fill: #2563eb; }
+    .timeline-thumb { fill: #2563eb; }
+    .timeline-tick { stroke: #71717a; stroke-width: 1; opacity: 0.5; }
+    .step-row-active { fill: #eff6ff; }
+    .pass-line { stroke: #2563eb; stroke-width: 0.6; stroke-dasharray: 1.4 1; }
+    .path-faint-pg { stroke: #2563eb; stroke-width: 0.5; opacity: 0.5; stroke-dasharray: 1 1; fill: none; }
+    .path-traveled-pg { stroke: #2563eb; stroke-width: 0.7; fill: none; }
+  </style>
+
+  <rect class="bg" x="0" y="0" width="400" height="880"/>
+  <rect class="phone" x="10" y="10" width="380" height="860" rx="28"/>
+
+  <!-- Header -->
+  <g>
+    <text x="28" y="48" font-size="18" fill="#52525b">←</text>
+    <text class="hint" x="200" y="48" text-anchor="middle">2 of 24</text>
+    <text x="372" y="48" text-anchor="end" font-size="16" fill="#52525b">⋯</text>
+  </g>
+
+  <!-- Title + pills -->
+  <g>
+    <text class="title" x="28" y="86">Horns Flare</text>
+    <rect class="pill-info-fill" x="28" y="96" width="60" height="20" rx="10"/>
+    <text class="pill-info-text" x="58" y="110" text-anchor="middle">Offense</text>
+    <rect class="pill-neutral" x="94" y="96" width="52" height="20" rx="10"/>
+    <text class="pill-neutral-text" x="120" y="110" text-anchor="middle">Horns</text>
+    <rect class="pill-neutral" x="152" y="96" width="56" height="20" rx="10"/>
+    <text class="pill-neutral-text" x="180" y="110" text-anchor="middle">vs man</text>
+  </g>
+
+  <!-- Court -->
+  <g transform="translate(28, 138)">
+    <rect class="court-bg" x="0" y="0" width="344" height="290" rx="6"/>
+
+    <g transform="translate(38, 12) scale(3.0)">
+      <rect class="court-line" x="2" y="2" width="96" height="86"/>
+      <rect class="court-line" x="32" y="56" width="36" height="30"/>
+      <circle class="court-line" cx="50" cy="56" r="7"/>
+      <path class="court-line" d="M 26 86 A 24 24 0 0 1 74 86"/>
+      <line class="court-line-strong" x1="44" y1="82" x2="56" y2="82"/>
+      <circle class="court-line-strong" cx="50" cy="83" r="1.2" fill="none"/>
+
+      <!-- PG path: full faint, traveled portion stronger -->
+      <path class="path-faint-pg" d="M 50 60 Q 47 52 45 45"/>
+      <path class="path-traveled-pg" d="M 50 60 Q 49 56 47 51"/>
+
+      <!-- Pass line -->
+      <line class="pass-line" x1="45" y1="45" x2="38" y2="30"/>
+      <polygon points="38,30 39.5,33 36.5,33" fill="#2563eb"/>
+
+      <circle class="player-node" cx="45" cy="45" r="3.6"/>
+      <text class="player-text" x="45" y="46.2">PG</text>
+
+      <circle class="player-node" cx="78" cy="65" r="3.6"/>
+      <text class="player-text" x="78" y="66.2">SG</text>
+
+      <circle class="player-node" cx="22" cy="65" r="3.6"/>
+      <text class="player-text" x="22" y="66.2">SF</text>
+
+      <circle class="player-active" cx="38" cy="30" r="3.6"/>
+      <text class="player-text-active" x="38" y="31.2">PF</text>
+
+      <circle class="player-node" cx="62" cy="30" r="3.6"/>
+      <text class="player-text" x="62" y="31.2">C</text>
+
+      <circle class="ball" cx="41" cy="37" r="1.2"/>
+    </g>
+  </g>
+
+  <!-- Timeline + transport -->
+  <g transform="translate(28, 444)">
+    <text class="body-3" x="0" y="0">1.4s / 6.0s</text>
+    <rect class="pill-neutral" x="220" y="-12" width="36" height="18" rx="9"/>
+    <text class="pill-neutral-text" x="238" y="1" text-anchor="middle">0.5×</text>
+    <rect class="pill-info-fill" x="262" y="-12" width="32" height="18" rx="9"/>
+    <text class="pill-info-text" x="278" y="1" text-anchor="middle">1×</text>
+    <rect class="pill-neutral" x="300" y="-12" width="32" height="18" rx="9"/>
+    <text class="pill-neutral-text" x="316" y="1" text-anchor="middle">2×</text>
+
+    <!-- scrubber -->
+    <rect class="timeline-track" x="0" y="14" width="344" height="6" rx="3"/>
+    <rect class="timeline-fill" x="0" y="14" width="78" height="6" rx="3"/>
+    <line class="timeline-tick" x1="68" y1="10" x2="68" y2="24"/>
+    <line class="timeline-tick" x1="143" y1="10" x2="143" y2="24"/>
+    <line class="timeline-tick" x1="184" y1="10" x2="184" y2="24"/>
+    <circle class="timeline-thumb" cx="78" cy="17" r="8"/>
+
+    <!-- transport buttons row -->
+    <g transform="translate(0, 50)">
+      <circle cx="124" cy="22" r="10" fill="none" stroke="#a1a1aa" stroke-width="1.2"/>
+      <path d="M 120 18 A 4 4 0 1 1 124 22" fill="none" stroke="#a1a1aa" stroke-width="1.2"/>
+      <polygon points="120,15 122,18 117,18" fill="#a1a1aa"/>
+
+      <circle cx="172" cy="22" r="18" fill="#2563eb"/>
+      <rect x="167" y="14" width="4" height="16" rx="0.5" fill="#fff"/>
+      <rect x="173" y="14" width="4" height="16" rx="0.5" fill="#fff"/>
+
+      <path d="M 216 14 L 220 14 L 220 22 L 224 22 L 224 30 L 216 30 Z" fill="none" stroke="#a1a1aa" stroke-width="1.2"/>
+    </g>
+  </g>
+
+  <!-- Steps -->
+  <g transform="translate(0, 552)">
+    <line class="divider" x1="28" y1="0" x2="372" y2="0"/>
+    <text class="label" x="28" y="24">Steps</text>
+
+    <rect class="step-row-active" x="28" y="32" width="344" height="32" rx="6"/>
+    <text x="44" y="52" font-size="11" font-weight="500" fill="#1d4ed8">1.2s</text>
+    <text x="92" y="48" font-size="12" font-weight="500" fill="#1d4ed8">Pass: PG → PF</text>
+    <text x="92" y="62" font-size="10" fill="#1d4ed8" opacity="0.75">Entry pass to elbow</text>
+
+    <text x="44" y="86" font-size="11" fill="#71717a">1.5s</text>
+    <text x="92" y="82" font-size="12" fill="#18181b">Screen: C → SG</text>
+    <text x="92" y="96" font-size="10" fill="#52525b">Flare screen at wing</text>
+
+    <text x="44" y="120" font-size="11" fill="#71717a">2.5s</text>
+    <text x="92" y="116" font-size="12" fill="#18181b">Pass: PF → SG</text>
+
+    <text x="44" y="146" font-size="11" fill="#71717a">3.2s</text>
+    <text x="92" y="142" font-size="12" fill="#18181b">Shot: SG (open three)</text>
+  </g>
+
+  <!-- Notes -->
+  <g transform="translate(0, 730)">
+    <line class="divider" x1="28" y1="0" x2="372" y2="0"/>
+    <text class="label" x="28" y="20">Notes from coach</text>
+    <text x="28" y="40" font-size="12" fill="#52525b">PG enters to PF at elbow, SG</text>
+    <text x="28" y="56" font-size="12" fill="#52525b">flares off C screen to the wing</text>
+    <text x="28" y="72" font-size="12" fill="#52525b">for an open three.</text>
+  </g>
+
+  <!-- Footer -->
+  <g transform="translate(0, 820)">
+    <line class="divider" x1="0" y1="0" x2="400" y2="0"/>
+    <rect class="surface-2" x="10" y="0" width="380" height="40"/>
+    <rect x="28" y="14" width="12" height="12" rx="2" fill="none" stroke="#a1a1aa" stroke-width="1.2"/>
+    <text x="48" y="25" font-size="12" fill="#52525b">Mark studied</text>
+    <text x="332" y="25" font-size="16" fill="#a1a1aa">‹</text>
+    <text x="358" y="25" font-size="16" fill="#18181b">›</text>
+  </g>
+</svg>

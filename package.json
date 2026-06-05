@@ -1,0 +1,21 @@
+{
+  "name": "courtvision",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "format": "biome format . --write",
+    "lint": "biome check .",
+    "test": "vitest",
+    "test:run": "vitest run",
+    "dev": "next dev"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@biomejs/biome": "^2.4.16",
+    "@vitest/ui": "^4.1.8",
+    "vitest": "^4.1.8"
+  }
+}

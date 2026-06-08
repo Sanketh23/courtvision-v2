@@ -1,11 +1,14 @@
 {
   "$schema": "https://biomejs.dev/schemas/2.4.16/schema.json",
-  "assist": {
+  "vcs": {
     "enabled": true,
-    "actions": {
-      "source": {
-        "organizeImports": "on"
-      }
+    "clientKind": "git",
+    "useIgnoreFile": true
+  },
+  "css": {
+    "parser": {
+      "cssModules": true,
+      "tailwindDirectives": true
     }
   },
   "linter": {

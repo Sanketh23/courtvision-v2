@@ -1,23 +1,40 @@
 {
   "name": "courtvision",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "version": "2.0.0",
+  "description": "CourtVision — a web-based basketball playbook app",
+  "private": true,
+  "type": "module",
   "scripts": {
-    "format": "biome format . --write",
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
     "lint": "biome check .",
+    "format": "biome format . --write",
+    "typecheck": "tsc --noEmit",
     "test": "vitest",
     "test:run": "vitest run",
-    "dev": "next dev",
     "prepare": "husky"
   },
-  "keywords": [],
-  "author": "",
   "license": "ISC",
   "devDependencies": {
     "@biomejs/biome": "^2.4.16",
+    "@tailwindcss/postcss": "^4.3.0",
+    "@types/node": "^25.9.1",
+    "@types/react": "^19.2.16",
+    "@types/react-dom": "^19.2.3",
     "@vitest/ui": "^4.1.8",
     "husky": "^9.1.7",
+    "tailwindcss": "^4.3.0",
+    "typescript": "^5.9.3",
     "vitest": "^4.1.8"
+  },
+  "dependencies": {
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
+    "next": "15",
+    "react": "19",
+    "react-dom": "19",
+    "tailwind-merge": "^3.6.0",
+    "zod": "^4.4.3"
   }
 }

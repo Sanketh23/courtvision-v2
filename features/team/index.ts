@@ -1,3 +1,9 @@
-// Team module
-// Handles team management: create team, invite code, team memberships
-// To be implemented in M1
+// Team module — create team, join via invite code, memberships.
+export { generateInviteCode, isValidInviteCode } from "./invite-code";
+export {
+  createTeam,
+  findTeamByCode,
+  getCurrentMembership,
+  joinTeamByCode,
+} from "./queries";
+export type { Membership, Role, TeamSummary } from "./types";

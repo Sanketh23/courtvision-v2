@@ -6,5 +6,12 @@ const envSchema = z.object({
   SUPABASE_SERVICE_ROLE_KEY: z.string().min(1, "SUPABASE_SERVICE_ROLE_KEY is required").optional(),
 });
 
-export const env = envSchema.parse(process.env);
+// Reference each NEXT_PUBLIC_* var as a static member expression so Next.js
+// inlines it into the client bundle. Passing `process.env` wholesale does NOT
+// get inlined and yields `undefined` on the client.
+export const env = envSchema.parse({
+  NEXT_PUBLIC_SUPABASE_URL: process.env.NEXT_PUBLIC_SUPABASE_URL,
+  NEXT_PUBLIC_SUPABASE_ANON_KEY: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
+  SUPABASE_SERVICE_ROLE_KEY: process.env.SUPABASE_SERVICE_ROLE_KEY,
+});
 export type Env = z.infer<typeof envSchema>;

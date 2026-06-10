@@ -90,11 +90,13 @@ grant execute on function find_team_by_code(text) to anon, authenticated;
 alter table teams enable row level security;
 alter table team_memberships enable row level security;
 
--- teams: a user can read a team they belong to.
-create policy "members can read their team"
+-- teams: a user can read a team they belong to, or one they own. The owner
+-- clause is required so the INSERT ... RETURNING in createTeam() succeeds
+-- before the coach's membership row exists.
+create policy "members or owner can read team"
   on teams for select
   to authenticated
-  using (is_team_member(id));
+  using (owner_id = auth.uid() or is_team_member(id));
 
 -- teams: any authenticated user can create a team they own.
 create policy "authenticated can create team"

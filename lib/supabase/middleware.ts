@@ -66,8 +66,13 @@ export async function updateSession(request: NextRequest) {
 
     const hasTeam = (count ?? 0) > 0;
 
-    // Authenticated but no team -> welcome (unless already there or joining).
-    if (!hasTeam && !pathname.startsWith("/welcome") && !pathname.startsWith("/join")) {
+    // Authenticated but no team -> welcome. Allow the team-setup routes
+    // (/welcome, /join, /team/new) so a new user can actually create or join.
+    const isTeamSetupRoute =
+      pathname.startsWith("/welcome") ||
+      pathname.startsWith("/join") ||
+      pathname.startsWith("/team/new");
+    if (!hasTeam && !isTeamSetupRoute) {
       const url = request.nextUrl.clone();
       url.pathname = "/welcome";
       return NextResponse.redirect(url);

@@ -1,0 +1,114 @@
+{
+  "id": "play_002",
+  "teamId": "team_001",
+  "name": "Give and Go",
+  "description": "PG passes to SG, cuts to the basket, gets it back for the layup",
+  "category": "offense",
+  "formation": "5-out",
+  "tags": ["basics"],
+  "status": "published",
+  "duration": 4000,
+  "players": [
+    {
+      "id": "player_0",
+      "slot": 0,
+      "label": "PG",
+      "path": {
+        "keyframes": [
+          { "time": 0, "x": 30, "y": 40 },
+          { "time": 1500, "x": 30, "y": 40 },
+          { "time": 3000, "x": 48, "y": 75 },
+          { "time": 4000, "x": 50, "y": 80 }
+        ],
+        "type": "linear"
+      }
+    },
+    {
+      "id": "player_1",
+      "slot": 1,
+      "label": "SG",
+      "path": {
+        "keyframes": [{ "time": 0, "x": 70, "y": 40 }, { "time": 4000, "x": 70, "y": 40 }],
+        "type": "linear"
+      }
+    },
+    {
+      "id": "player_2",
+      "slot": 2,
+      "label": "SF",
+      "path": {
+        "keyframes": [{ "time": 0, "x": 15, "y": 65 }, { "time": 4000, "x": 15, "y": 65 }],
+        "type": "linear"
+      }
+    },
+    {
+      "id": "player_3",
+      "slot": 3,
+      "label": "PF",
+      "path": {
+        "keyframes": [{ "time": 0, "x": 85, "y": 65 }, { "time": 4000, "x": 85, "y": 65 }],
+        "type": "linear"
+      }
+    },
+    {
+      "id": "player_4",
+      "slot": 4,
+      "label": "C",
+      "path": {
+        "keyframes": [{ "time": 0, "x": 62, "y": 80 }, { "time": 4000, "x": 62, "y": 80 }],
+        "type": "linear"
+      }
+    }
+  ],
+  "ball": {
+    "keyframes": [
+      { "time": 0, "x": 30, "y": 40, "inFlight": false },
+      { "time": 1000, "x": 30, "y": 40, "inFlight": false },
+      { "time": 1400, "x": 70, "y": 40, "inFlight": true },
+      { "time": 2600, "x": 70, "y": 40, "inFlight": false },
+      { "time": 3000, "x": 48, "y": 75, "inFlight": true },
+      { "time": 3200, "x": 48, "y": 76, "inFlight": false },
+      { "time": 3800, "x": 50, "y": 89, "inFlight": true },
+      { "time": 4000, "x": 50, "y": 89, "inFlight": false }
+    ],
+    "type": "linear"
+  },
+  "actions": [
+    {
+      "id": "action_0",
+      "type": "pass",
+      "from": "player_0",
+      "to": "player_1",
+      "time": 1000,
+      "duration": 400
+    },
+    {
+      "id": "action_1",
+      "type": "cut",
+      "player": "player_0",
+      "toward": "basket",
+      "time": 1500,
+      "duration": 1500
+    },
+    {
+      "id": "action_2",
+      "type": "pass",
+      "from": "player_1",
+      "to": "player_0",
+      "time": 2600,
+      "duration": 400
+    },
+    {
+      "id": "action_3",
+      "type": "shot",
+      "player": "player_0",
+      "location": { "x": 48, "y": 76 },
+      "time": 3200,
+      "duration": 600
+    }
+  ],
+  "createdAt": "2026-02-01T09:00:00Z",
+  "createdBy": "user_coach_001",
+  "publishedAt": "2026-02-01T09:30:00Z",
+  "publishedBy": "user_coach_001"
+}

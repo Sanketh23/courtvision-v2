@@ -1,0 +1,104 @@
+{
+  "id": "play_001",
+  "teamId": "team_001",
+  "name": "Spread P&R",
+  "description": "PG dribbles off screen from PF, kicks out to SG",
+  "category": "offense",
+  "formation": "5-out",
+  "tags": [],
+  "status": "published",
+  "duration": 5000,
+  "players": [
+    {
+      "id": "player_0",
+      "slot": 0,
+      "label": "PG",
+      "path": {
+        "keyframes": [
+          { "time": 0, "x": 20, "y": 47 },
+          { "time": 3000, "x": 45, "y": 47 },
+          { "time": 5000, "x": 50, "y": 47 }
+        ],
+        "type": "cubic"
+      }
+    },
+    {
+      "id": "player_1",
+      "slot": 1,
+      "label": "SG",
+      "path": {
+        "keyframes": [{ "time": 0, "x": 80, "y": 30 }, { "time": 5000, "x": 75, "y": 20 }],
+        "type": "linear"
+      }
+    },
+    {
+      "id": "player_2",
+      "slot": 2,
+      "label": "SF",
+      "path": {
+        "keyframes": [{ "time": 0, "x": 75, "y": 60 }, { "time": 5000, "x": 75, "y": 60 }],
+        "type": "linear"
+      }
+    },
+    {
+      "id": "player_3",
+      "slot": 3,
+      "label": "PF",
+      "path": {
+        "keyframes": [
+          { "time": 0, "x": 30, "y": 70 },
+          { "time": 3000, "x": 40, "y": 50 },
+          { "time": 5000, "x": 45, "y": 40 }
+        ],
+        "type": "cubic"
+      }
+    },
+    {
+      "id": "player_4",
+      "slot": 4,
+      "label": "C",
+      "path": {
+        "keyframes": [{ "time": 0, "x": 50, "y": 80 }, { "time": 5000, "x": 50, "y": 80 }],
+        "type": "linear"
+      }
+    }
+  ],
+  "ball": {
+    "keyframes": [
+      { "time": 0, "x": 20, "y": 47, "inFlight": false },
+      { "time": 2500, "x": 45, "y": 47, "inFlight": false },
+      { "time": 3500, "x": 75, "y": 25, "inFlight": true },
+      { "time": 5000, "x": 75, "y": 20, "inFlight": false }
+    ],
+    "type": "cubic"
+  },
+  "actions": [
+    {
+      "id": "action_0",
+      "type": "dribble",
+      "player": "player_0",
+      "time": 0,
+      "duration": 2500
+    },
+    {
+      "id": "action_1",
+      "type": "screen",
+      "screener": "player_3",
+      "target": "player_0",
+      "time": 2000,
+      "duration": 1500
+    },
+    {
+      "id": "action_2",
+      "type": "pass",
+      "from": "player_0",
+      "to": "player_1",
+      "time": 3000,
+      "duration": 500
+    }
+  ],
+  "createdAt": "2026-01-15T10:30:00Z",
+  "createdBy": "user_coach_001",
+  "publishedAt": "2026-01-16T14:00:00Z",
+  "publishedBy": "user_coach_001"
+}

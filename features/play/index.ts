@@ -1,3 +1,3 @@
-// Play module
-// Core play editing, viewing, animation engine
-// Exports: schemas, queries, engine functions, components
+// Play module — schema (the source of truth), animation engine, viewer.
+export * from "./engine";
+export * from "./schemas";

@@ -1,0 +1,36 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`ballPositionAt > matches known ball positions for the Spread P&R fixture (snapshot) 1`] = `
+[
+  {
+    "inFlight": false,
+    "x": 20,
+    "y": 47,
+  },
+  {
+    "inFlight": false,
+    "x": 27.96,
+    "y": 48.056,
+  },
+  {
+    "inFlight": false,
+    "x": 39.28,
+    "y": 48.408,
+  },
+  {
+    "inFlight": true,
+    "x": 61.5625,
+    "y": 36.3125,
+  },
+  {
+    "inFlight": false,
+    "x": 77.22222222222223,
+    "y": 21.88888888888889,
+  },
+  {
+    "inFlight": false,
+    "x": 75,
+    "y": 20,
+  },
+]
+`;

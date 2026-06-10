@@ -1,14 +1,19 @@
 import Link from "next/link";
+import { createSamplePlayAction } from "@/features/play/actions";
 import { fixturePlays } from "@/features/play/fixtures";
+import { listPlays } from "@/features/play/queries";
 import { requireAuth } from "@/lib/auth";
 import { createClient } from "@/lib/supabase/server";
 
 import { SignOutButton } from "./sign-out-button";
 
 /**
- * M1 playbook placeholder. The real playbook (browse/search/grid) is M7.
- * For M1 this confirms the authed + team-scoped landing and surfaces the
- * invite code so a coach can share it (UI_WORKFLOWS §4.4).
+ * Playbook landing. The real browse/search/grid view is M7; for now this
+ * lists the team's database plays (M4) plus the hand-authored sample plays,
+ * and surfaces the invite code for coaches (UI_WORKFLOWS §4.4).
+ *
+ * RLS scopes which plays come back: coaches see all their team's plays,
+ * players only published ones.
  */
 export default async function PlaybookPage() {
   const user = await requireAuth();
@@ -16,14 +21,16 @@ export default async function PlaybookPage() {
 
   const { data: membership } = await supabase
     .from("team_memberships")
-    .select("role, teams ( name, invite_code )")
+    .select("team_id, role, teams ( name, invite_code )")
     .eq("user_id", user.id)
     .limit(1)
     .maybeSingle();
 
   const team = membership?.teams as { name: string; invite_code: string } | null | undefined;
-  const role = membership?.role;
-  const isCoach = role === "coach";
+  const teamId = membership?.team_id;
+  const isCoach = membership?.role === "coach";
+
+  const plays = teamId ? await listPlays(supabase, teamId) : [];
 
   return (
     <main className="mx-auto max-w-5xl px-6 py-8">
@@ -53,9 +60,54 @@ export default async function PlaybookPage() {
         </div>
       )}
 
-      {/* M3 preview: fixture plays demonstrate the animated viewer until
-          real persistence (M4) and the playbook browse view (M7) land. */}
+      {/* Team plays from the database (M4). */}
       <section className="mb-8">
+        <div className="mb-3 flex items-center justify-between">
+          <h2 className="text-sm font-medium text-gray-500">Plays</h2>
+          {isCoach && (
+            <form action={createSamplePlayAction}>
+              <button
+                type="submit"
+                className="rounded-md bg-blue-600 px-3 py-1.5 text-sm font-medium text-white transition-colors hover:bg-blue-700"
+              >
+                + Add sample play
+              </button>
+            </form>
+          )}
+        </div>
+
+        {plays.length === 0 ? (
+          <div className="rounded-lg border border-dashed border-gray-300 py-12 text-center">
+            <p className="text-sm text-gray-600">
+              {isCoach
+                ? "No plays yet. Add a sample play to see it animate, or wait for the editor."
+                : "Your coach hasn't published any plays yet. Check back soon."}
+            </p>
+          </div>
+        ) : (
+          <ul className="grid gap-3 sm:grid-cols-3">
+            {plays.map((play) => (
+              <li key={play.id}>
+                <Link
+                  href={`/play/${play.id}`}
+                  className="block rounded-lg border border-gray-200 px-4 py-3 transition-colors hover:border-blue-300 hover:bg-blue-50"
+                >
+                  <span className="flex items-center justify-between gap-2">
+                    <span className="font-medium text-gray-900">{play.name}</span>
+                    <StatusPill status={play.status} />
+                  </span>
+                  <span className="mt-0.5 block text-xs text-gray-500">
+                    {play.formation ?? play.category} · {play.durationSeconds.toFixed(1)}s
+                  </span>
+                </Link>
+              </li>
+            ))}
+          </ul>
+        )}
+      </section>
+
+      {/* Hand-authored fixtures, always available as a demo of the viewer. */}
+      <section>
         <h2 className="mb-3 text-sm font-medium text-gray-500">Sample plays</h2>
         <ul className="grid gap-3 sm:grid-cols-3">
           {Object.values(fixturePlays).map((play) => (
@@ -73,17 +125,21 @@ export default async function PlaybookPage() {
           ))}
         </ul>
       </section>
-
-      <div className="rounded-lg border border-dashed border-gray-300 py-20 text-center">
-        <h1 className="mb-2 text-xl font-semibold text-gray-900">
-          {isCoach ? "Your playbook is empty" : "No plays yet"}
-        </h1>
-        <p className="text-sm text-gray-600">
-          {isCoach
-            ? "Creating plays comes next. The editor lands in a later milestone."
-            : "Your coach hasn't published any plays yet. Check back soon."}
-        </p>
-      </div>
     </main>
+  );
+}
+
+function StatusPill({ status }: { status: "draft" | "published" | "archived" }) {
+  const styles = {
+    draft: "bg-amber-100 text-amber-800",
+    published: "bg-green-100 text-green-800",
+    archived: "bg-gray-100 text-gray-600",
+  } as const;
+  return (
+    <span
+      className={`rounded-full px-2 py-0.5 text-[10px] font-medium capitalize ${styles[status]}`}
+    >
+      {status}
+    </span>
   );
 }

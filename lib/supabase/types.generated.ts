@@ -34,6 +34,68 @@ export type Database = {
   }
   public: {
     Tables: {
+      plays: {
+        Row: {
+          category: string
+          created_at: string
+          created_by: string
+          data: Json
+          description: string | null
+          duration_seconds: number
+          formation: string | null
+          id: string
+          name: string
+          published_at: string | null
+          published_by: string | null
+          status: string
+          tags: string[]
+          team_id: string
+          updated_at: string
+        }
+        Insert: {
+          category: string
+          created_at?: string
+          created_by: string
+          data: Json
+          description?: string | null
+          duration_seconds?: number
+          formation?: string | null
+          id?: string
+          name: string
+          published_at?: string | null
+          published_by?: string | null
+          status?: string
+          tags?: string[]
+          team_id: string
+          updated_at?: string
+        }
+        Update: {
+          category?: string
+          created_at?: string
+          created_by?: string
+          data?: Json
+          description?: string | null
+          duration_seconds?: number
+          formation?: string | null
+          id?: string
+          name?: string
+          published_at?: string | null
+          published_by?: string | null
+          status?: string
+          tags?: string[]
+          team_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "plays_team_id_fkey"
+            columns: ["team_id"]
+            isOneToOne: false
+            referencedRelation: "teams"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       team_memberships: {
         Row: {
           id: string

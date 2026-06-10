@@ -1,3 +1,3 @@
-// Play viewer module
-// Mobile-first play viewing, animation playback, scrubbing, speed control, steps list
-// To be implemented in M3
+// Viewer — animated play playback for coaches and players (M3).
+export { PlayViewer } from "./components/PlayViewer";
+export { usePlayEngine } from "./use-play-engine";

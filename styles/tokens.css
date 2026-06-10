@@ -43,6 +43,18 @@
   /* CourtVision-specific */
   --ball: #d97706;
 
+  /* Per-slot player colors (UI_WORKFLOWS §13.3): PG blue, SG teal, then
+     visually distinct families that don't collide with the ball orange. */
+  --slot-0: #2563eb;
+  --slot-1: #0d9488;
+  --slot-2: #7c3aed;
+  --slot-3: #e11d48;
+  --slot-4: #16a34a;
+
+  /* Court rendering */
+  --court-line: #a1a1aa;
+  --court-surface: #ffffff;
+
   --radius: 0.5rem;
 }
 
@@ -72,4 +84,13 @@
   --ring: #2563eb;
 
   --ball: #f59e0b;
+
+  --slot-0: #60a5fa;
+  --slot-1: #2dd4bf;
+  --slot-2: #a78bfa;
+  --slot-3: #fb7185;
+  --slot-4: #4ade80;
+
+  --court-line: #52525b;
+  --court-surface: #27272a;
 }

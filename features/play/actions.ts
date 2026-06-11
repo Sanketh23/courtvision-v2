@@ -1,23 +1,37 @@
 "use server";
 
-import { redirect } from "next/navigation";
-import { spreadPr } from "@/features/play/fixtures";
-import { createPlay } from "@/features/play/queries";
-import { playSchema } from "@/features/play/schemas";
+import { createPlay, updatePlay } from "@/features/play/queries";
+import { type Play, playSchema } from "@/features/play/schemas";
 import { requireAuth } from "@/lib/auth";
 import { createClient } from "@/lib/supabase/server";
 
 /**
- * Minimal "create play" path for M4 (ROADMAP §7): inserts a fixture-like
- * play so the viewer has real database rows to load. The full editor is M5.
+ * Server-side play save for the editor (UI_WORKFLOWS §7.7).
  *
- * The acting coach's team is resolved from their membership; RLS rejects the
- * insert if they aren't a coach on that team.
+ * Handles both an unsaved new play (insert) and an existing one (update).
+ * The play body is re-validated against the schema on the server before it
+ * touches the database — the client is never trusted to send valid data.
+ * RLS rejects the write unless the caller is a coach on the play's team.
+ *
+ * Versioning (a play_versions snapshot per save) is M8; this is a plain save.
+ *
+ * Returns the play's database id (newly assigned on insert).
  */
-export async function createSamplePlayAction(): Promise<void> {
+export async function savePlayAction(input: {
+  playId: string | null;
+  play: unknown;
+}): Promise<{ id: string }> {
   const user = await requireAuth();
   const supabase = await createClient();
 
+  const play: Play = playSchema.parse(input.play);
+
+  if (input.playId) {
+    await updatePlay(supabase, input.playId, play);
+    return { id: input.playId };
+  }
+
+  // New play: resolve the acting coach's team for the insert.
   const { data: membership } = await supabase
     .from("team_memberships")
     .select("team_id, role")
@@ -30,22 +44,10 @@ export async function createSamplePlayAction(): Promise<void> {
     throw new Error("Only a coach can create a play.");
   }
 
-  // Start from the Spread P&R fixture as a seed, marked as a fresh draft.
-  const seed = playSchema.parse({
-    ...spreadPr,
-    name: "Spread P&R (sample)",
-    status: "draft",
-    createdAt: new Date().toISOString(),
-    createdBy: user.id,
-    publishedAt: undefined,
-    publishedBy: undefined,
-  });
-
-  const playId = await createPlay(supabase, {
+  const id = await createPlay(supabase, {
     teamId: membership.team_id,
     createdBy: user.id,
-    play: seed,
+    play,
   });
-
-  redirect(`/play/${playId}`);
+  return { id };
 }

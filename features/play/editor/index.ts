@@ -1,3 +1,3 @@
-// Play editor module
-// Desktop-only play editing UI, position placement, motion creation, action creation
-// To be implemented in M5-M6
+// Editor — desktop-only play authoring (M5: positions & motion).
+export { NewPlayFlow } from "./components/NewPlayFlow";
+export { PlayEditor } from "./components/PlayEditor";

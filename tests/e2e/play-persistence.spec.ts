@@ -1,18 +1,22 @@
 import { expect, test } from "@playwright/test";
 
 /**
- * M4 persistence flow (ROADMAP §7 DoD): a coach creates a play, it persists
- * to the database, appears in the playbook, and the viewer renders the
- * database-loaded play (a real UUID route, not a fixture).
+ * M4 persistence flow (ROADMAP §7 DoD): a play created in the editor
+ * persists to the database, appears in the playbook, and the viewer renders
+ * the database-loaded play (a real UUID route) — animating identically to a
+ * fixture.
  *
- * Requires the local Supabase stack (`supabase start`).
+ * Requires the local Supabase stack (`supabase start`). Runs at desktop
+ * width since play creation goes through the desktop-only editor.
  */
 
 function uniqueEmail(prefix: string): string {
   return `${prefix}+${Date.now()}@example.com`;
 }
 
-test("a coach creates a play that persists and animates from the database", async ({ page }) => {
+test.use({ viewport: { width: 1440, height: 900 } });
+
+test("a database-loaded play animates in the viewer", async ({ page }) => {
   // --- Coach + team ---
   await page.goto("/sign-up");
   await page.getByLabel("Full name").fill("Persist Coach");
@@ -29,28 +33,31 @@ test("a coach creates a play that persists and animates from the database", asyn
   // No database plays yet.
   await expect(page.getByText("No plays yet", { exact: false })).toBeVisible();
 
-  // --- Create a play (server action inserts into the database) ---
-  await page.getByRole("button", { name: "+ Add sample play" }).click();
+  // --- Create a play in the editor and save it to the database ---
+  await page.getByRole("link", { name: "+ New play" }).click();
+  await page.getByRole("button", { name: /Spread/ }).click();
+  await page.getByLabel("Play name").fill("Persisted Set");
+  await page.getByRole("button", { name: "Save", exact: true }).click();
+  await expect(page).toHaveURL(/\/play\/[0-9a-f-]{36}\/edit$/, { timeout: 10_000 });
 
-  // Lands on the viewer at a real UUID route (not a fixture id).
-  await expect(page).toHaveURL(/\/play\/[0-9a-f-]{36}$/);
-  await expect(page.getByRole("heading", { name: "Spread P&R (sample)" })).toBeVisible();
-  await expect(page.getByText("Pass: PG → SG")).toBeVisible();
-
-  // It animates (DB-loaded play is identical to a fixture).
-  const readout = page.getByText(/^\d+\.\ds \/ 5\.0s$/);
-  await expect(readout).toHaveText("0.0s / 5.0s");
-  await page.getByRole("button", { name: "Play", exact: true }).click();
-  await expect(readout).not.toHaveText("0.0s / 5.0s");
-
-  // --- It persists: back in the playbook it shows as a draft ---
-  await page.getByRole("link", { name: "Playbook" }).click();
+  // --- It shows in the playbook (the back control is a button) ---
+  await page.getByRole("button", { name: "Back to playbook" }).click();
   await expect(page).toHaveURL(/\/playbook/);
-  const card = page.getByRole("link", { name: /Spread P&R \(sample\)/ });
+  const card = page.getByRole("link", { name: /Persisted Set/ }).first();
   await expect(card).toBeVisible();
-  await expect(card.getByText("draft")).toBeVisible();
+
+  // --- Open it in the viewer: a real UUID route, animating from the DB ---
+  await card.click();
+  await expect(page).toHaveURL(/\/play\/[0-9a-f-]{36}$/);
+  await expect(page.getByRole("heading", { name: "Persisted Set" })).toBeVisible();
+  await expect(page.getByRole("img", { name: /half-court/i })).toBeVisible();
+
+  const readout = page.getByText(/^\d+\.\ds \/ 4\.0s$/);
+  await expect(readout).toHaveText("0.0s / 4.0s");
+  await page.getByRole("button", { name: "Play", exact: true }).click();
+  await expect(readout).not.toHaveText("0.0s / 4.0s");
 
   // --- Survives a reload (it's in the database, not memory) ---
-  await page.reload();
-  await expect(page.getByRole("link", { name: /Spread P&R \(sample\)/ })).toBeVisible();
+  await page.goto("/playbook");
+  await expect(page.getByRole("link", { name: /Persisted Set/ }).first()).toBeVisible();
 });

@@ -1,5 +1,4 @@
 import Link from "next/link";
-import { createSamplePlayAction } from "@/features/play/actions";
 import { fixturePlays } from "@/features/play/fixtures";
 import { listPlays } from "@/features/play/queries";
 import { requireAuth } from "@/lib/auth";
@@ -65,14 +64,12 @@ export default async function PlaybookPage() {
         <div className="mb-3 flex items-center justify-between">
           <h2 className="text-sm font-medium text-gray-500">Plays</h2>
           {isCoach && (
-            <form action={createSamplePlayAction}>
-              <button
-                type="submit"
-                className="rounded-md bg-blue-600 px-3 py-1.5 text-sm font-medium text-white transition-colors hover:bg-blue-700"
-              >
-                + Add sample play
-              </button>
-            </form>
+            <Link
+              href="/play/new"
+              className="rounded-md bg-blue-600 px-3 py-1.5 text-sm font-medium text-white transition-colors hover:bg-blue-700"
+            >
+              + New play
+            </Link>
           )}
         </div>
 
@@ -87,11 +84,11 @@ export default async function PlaybookPage() {
         ) : (
           <ul className="grid gap-3 sm:grid-cols-3">
             {plays.map((play) => (
-              <li key={play.id}>
-                <Link
-                  href={`/play/${play.id}`}
-                  className="block rounded-lg border border-gray-200 px-4 py-3 transition-colors hover:border-blue-300 hover:bg-blue-50"
-                >
+              <li
+                key={play.id}
+                className="rounded-lg border border-gray-200 transition-colors hover:border-blue-300"
+              >
+                <Link href={`/play/${play.id}`} className="block px-4 py-3 hover:bg-blue-50">
                   <span className="flex items-center justify-between gap-2">
                     <span className="font-medium text-gray-900">{play.name}</span>
                     <StatusPill status={play.status} />
@@ -100,6 +97,14 @@ export default async function PlaybookPage() {
                     {play.formation ?? play.category} · {play.durationSeconds.toFixed(1)}s
                   </span>
                 </Link>
+                {isCoach && (
+                  <Link
+                    href={`/play/${play.id}/edit`}
+                    className="block border-t border-gray-100 px-4 py-1.5 text-xs font-medium text-blue-600 hover:bg-blue-50"
+                  >
+                    Edit
+                  </Link>
+                )}
               </li>
             ))}
           </ul>

@@ -1,4 +1,4 @@
-import type { ReactNode } from "react";
+import type { ReactNode, Ref } from "react";
 import { COURT_HEIGHT, COURT_WIDTH } from "@/features/play/schemas";
 
 /**
@@ -9,11 +9,21 @@ import { COURT_HEIGHT, COURT_WIDTH } from "@/features/play/schemas";
  * themselves directly in play coordinates with no conversion.
  *
  * Geometry is sketch-accurate, not regulation-accurate: 1 unit ≈ 0.5 ft,
- * sized to read clearly at phone width.
+ * sized to read clearly at phone width. The editor passes a ref to map
+ * pointer coordinates into court space.
  */
-export function Court({ children, className }: { children?: ReactNode; className?: string }) {
+export function Court({
+  children,
+  className,
+  ref,
+}: {
+  children?: ReactNode;
+  className?: string;
+  ref?: Ref<SVGSVGElement>;
+}) {
   return (
     <svg
+      ref={ref}
       viewBox={`0 0 ${COURT_WIDTH} ${COURT_HEIGHT}`}
       className={className}
       role="img"

@@ -1,18 +1,34 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { fixturePlays } from "@/features/play/fixtures";
+import { getPlay } from "@/features/play/queries";
+import type { Play } from "@/features/play/schemas";
 import { PlayViewer } from "@/features/play/viewer";
+import { createClient } from "@/lib/supabase/server";
 
 /**
  * The play viewer route (UI_WORKFLOWS.md §8–§9).
  *
- * M3: plays come from the hand-authored fixtures, not the database —
- * persistence is M4 (ROADMAP.md §6 "explicitly not included"). The id
- * segment looks up a fixture; unknown ids 404.
+ * M4: a play is loaded from the database by id, validated against the Zod
+ * schema in getPlay(). The hand-authored fixtures from M3 are kept as a
+ * fallback so the sample plays still work without seeding the database;
+ * a database play renders identically to a fixture (M4 DoD). RLS decides
+ * whether the caller may see a given database play.
  */
 export default async function PlayPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-  const play = fixturePlays[id];
+
+  let play: Play | null = null;
+  try {
+    const supabase = await createClient();
+    play = await getPlay(supabase, id);
+  } catch {
+    // Non-UUID ids (e.g. the fixture "play_001") make Postgres throw on the
+    // uuid comparison; fall through to the fixture lookup below.
+    play = null;
+  }
+  play ??= fixturePlays[id] ?? null;
+
   if (!play) notFound();
 
   return (

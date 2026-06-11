@@ -1,12 +1,13 @@
 "use client";
 
 import { useEffect } from "react";
+import { ACTION_SHORTCUTS, isActionValidForSelection } from "@/features/play/editor/action-rules";
 import { useEditorStoreApi } from "@/features/play/editor/store-context";
 
 /**
- * Editor keyboard shortcuts (UI_WORKFLOWS §7.9). Wired at the editor root.
- * Action-add letters (P/S/D/C/H/T) are intentionally omitted — actions are
- * M6. onSave is provided by the editor (it owns the save transition).
+ * Editor keyboard shortcuts (UI_WORKFLOWS §7.9), incl. the quick-add action
+ * letters (P/S/D/C/H/T) when the selection makes the action valid. onSave is
+ * provided by the editor (it owns the save transition).
  *
  * Shortcuts are ignored while typing in an input/textarea/select so the
  * properties rail and name field behave normally.
@@ -50,7 +51,11 @@ export function useEditorShortcuts(onSave: () => void) {
           return;
         case "Delete":
         case "Backspace":
-          if (state.selectedKeyframe) {
+          // Selected action first, then selected keyframe (UI §7.9).
+          if (state.selectedActionId) {
+            e.preventDefault();
+            state.removeAction(state.selectedActionId);
+          } else if (state.selectedKeyframe) {
             e.preventDefault();
             state.removeKeyframe(state.selectedKeyframe.slot, state.selectedKeyframe.index);
           }
@@ -76,6 +81,14 @@ export function useEditorShortcuts(onSave: () => void) {
       // 1–5 quick-select a player by slot index.
       if (e.key >= "1" && e.key <= "5") {
         state.selectSlot(Number(e.key) - 1);
+        return;
+      }
+
+      // P/S/D/C/H/T quick-add an action when the selection is valid.
+      const actionType = ACTION_SHORTCUTS[e.key.toLowerCase()];
+      if (actionType && !mod && isActionValidForSelection(actionType, state.selectedSlots)) {
+        e.preventDefault();
+        state.createAction(actionType);
       }
     }
 

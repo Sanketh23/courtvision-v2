@@ -3,7 +3,11 @@
 import { useCallback, useMemo, useRef } from "react";
 import { Court } from "@/features/play/court/Court";
 import { useEditor } from "@/features/play/editor/store-context";
+import { ballPositionAt } from "@/features/play/engine/ball";
+import { overlaysFromActions } from "@/features/play/engine/overlays";
 import { positionAt } from "@/features/play/engine/position";
+import { ActionOverlays } from "@/features/play/viewer/components/ActionOverlays";
+import { BallMarker } from "@/features/play/viewer/components/BallMarker";
 import { samplePath, splitPathAt, toPolylinePoints } from "@/features/play/viewer/paths";
 
 /**
@@ -19,10 +23,12 @@ export function EditorCourt() {
   const play = useEditor((s) => s.play);
   const cursor = useEditor((s) => s.cursor);
   const showPaths = useEditor((s) => s.showPaths);
-  const selectedSlot = useEditor((s) => s.selectedSlot);
+  const selectedSlots = useEditor((s) => s.selectedSlots);
   const selectedKeyframe = useEditor((s) => s.selectedKeyframe);
   const selectSlot = useEditor((s) => s.selectSlot);
+  const toggleSlot = useEditor((s) => s.toggleSlot);
   const selectKeyframe = useEditor((s) => s.selectKeyframe);
+  const primarySlot = selectedSlots[0] ?? null;
   const dragPlayerTo = useEditor((s) => s.dragPlayerTo);
   const moveKeyframePos = useEditor((s) => s.moveKeyframePos);
 
@@ -42,6 +48,12 @@ export function EditorCourt() {
   const onPlayerPointerDown = useCallback(
     (slot: number) => (e: React.PointerEvent) => {
       e.preventDefault();
+      // Shift-click extends the ordered selection (for 2-player actions)
+      // without starting a drag.
+      if (e.shiftKey) {
+        toggleSlot(slot);
+        return;
+      }
       selectSlot(slot);
       const target = e.currentTarget as Element;
       target.setPointerCapture(e.pointerId);
@@ -58,7 +70,7 @@ export function EditorCourt() {
       window.addEventListener("pointermove", move);
       window.addEventListener("pointerup", up);
     },
-    [selectSlot, toCourt, dragPlayerTo],
+    [selectSlot, toggleSlot, toCourt, dragPlayerTo],
   );
 
   // Drag a keyframe dot → move that keyframe's position.
@@ -90,14 +102,21 @@ export function EditorCourt() {
     [play.players, play.duration],
   );
 
+  // Live action overlays + derived ball, recomputed as actions change (M6).
+  const overlays = useMemo(
+    () => overlaysFromActions(play.actions, play.players),
+    [play.actions, play.players],
+  );
+  const ball = ballPositionAt(play.ball, cursor);
+
   return (
     <Court ref={svgRef} className="w-full touch-none select-none rounded-lg border border-border">
       {/* Paths */}
       {sampled.map(({ player, points }) => {
-        if (!showPaths && player.slot !== selectedSlot) return null;
+        if (!showPaths && player.slot !== primarySlot) return null;
         const { traveled, remaining } = splitPathAt(points, player.path, cursor);
         const color = `var(--slot-${player.slot})`;
-        const emphasized = player.slot === selectedSlot;
+        const emphasized = player.slot === primarySlot;
         return (
           <g key={player.id} fill="none" stroke={color} strokeLinecap="round">
             <polyline
@@ -115,9 +134,9 @@ export function EditorCourt() {
       })}
 
       {/* Keyframe dots for the selected player */}
-      {selectedSlot !== null &&
+      {primarySlot !== null &&
         play.players
-          .filter((p) => p.slot === selectedSlot)
+          .filter((p) => p.slot === primarySlot)
           .flatMap((player) =>
             player.path.keyframes.map((kf, index) => {
               const isSelected =
@@ -138,10 +157,13 @@ export function EditorCourt() {
             }),
           )}
 
+      {/* Live action overlays (visible during their time window) */}
+      <ActionOverlays overlays={overlays} currentTime={cursor} />
+
       {/* Player tokens */}
       {play.players.map((player) => {
         const pos = positionAt(player.path, cursor);
-        const isSelected = player.slot === selectedSlot;
+        const isSelected = selectedSlots.includes(player.slot);
         return (
           <g
             key={player.id}
@@ -169,6 +191,8 @@ export function EditorCourt() {
           </g>
         );
       })}
+      {/* The derived ball (read-only — regenerated from actions) */}
+      <BallMarker x={ball.x} y={ball.y} inFlight={ball.inFlight} />
     </Court>
   );
 }

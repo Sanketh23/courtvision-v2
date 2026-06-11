@@ -16,7 +16,7 @@ export function PlayerPaths({ play, currentTime }: { play: Play; currentTime: nu
   );
 
   return (
-    <g fill="none" strokeLinecap="round" strokeLinejoin="round">
+    <g fill="none" strokeLinecap="round" strokeLinejoin="round" pointerEvents="none">
       {sampled.map(({ player, points }) => {
         const { traveled, remaining } = splitPathAt(points, player.path, currentTime);
         const color = `var(--slot-${player.slot})`;

@@ -18,7 +18,7 @@ export function ActionOverlays({
   );
 
   return (
-    <g fill="none">
+    <g fill="none" pointerEvents="none">
       {visible.map((overlay) => {
         switch (overlay.type) {
           case "pass_arrow":

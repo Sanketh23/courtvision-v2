@@ -112,3 +112,27 @@ export async function createPlay(client: Client, input: CreatePlayInput): Promis
   if (error) throw new Error(error.message);
   return data.id;
 }
+
+/**
+ * Update an existing play's body and mirrored columns (editor save,
+ * UI_WORKFLOWS §7.7). duration_seconds and updated_at are maintained by the
+ * trigger. RLS rejects the update unless the caller is a coach on the team.
+ */
+export async function updatePlay(client: Client, playId: string, play: Play): Promise<void> {
+  const { error } = await client
+    .from("plays")
+    .update({
+      name: play.name,
+      description: play.description ?? null,
+      category: play.category,
+      formation: play.formation ?? null,
+      tags: play.tags,
+      status: play.status,
+      published_at: play.publishedAt ?? null,
+      published_by: play.publishedBy ?? null,
+      data: play,
+    })
+    .eq("id", playId);
+
+  if (error) throw new Error(error.message);
+}

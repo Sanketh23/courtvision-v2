@@ -1,0 +1,85 @@
+"use client";
+
+import { useEffect } from "react";
+import { useEditorStoreApi } from "@/features/play/editor/store-context";
+
+/**
+ * Editor keyboard shortcuts (UI_WORKFLOWS §7.9). Wired at the editor root.
+ * Action-add letters (P/S/D/C/H/T) are intentionally omitted — actions are
+ * M6. onSave is provided by the editor (it owns the save transition).
+ *
+ * Shortcuts are ignored while typing in an input/textarea/select so the
+ * properties rail and name field behave normally.
+ */
+export function useEditorShortcuts(onSave: () => void) {
+  const store = useEditorStoreApi();
+
+  useEffect(() => {
+    function isTyping(target: EventTarget | null): boolean {
+      const el = target as HTMLElement | null;
+      const tag = el?.tagName;
+      return (
+        tag === "INPUT" || tag === "TEXTAREA" || tag === "SELECT" || el?.isContentEditable === true
+      );
+    }
+
+    function onKeyDown(e: KeyboardEvent) {
+      const mod = e.metaKey || e.ctrlKey;
+      const state = store.getState();
+
+      // Save works even while typing.
+      if (mod && e.key.toLowerCase() === "s") {
+        e.preventDefault();
+        onSave();
+        return;
+      }
+
+      if (isTyping(e.target)) return;
+
+      if (mod && e.key.toLowerCase() === "z") {
+        e.preventDefault();
+        if (e.shiftKey) state.redo();
+        else state.undo();
+        return;
+      }
+
+      switch (e.key) {
+        case " ":
+          e.preventDefault();
+          state.setPlaying(!state.isPlaying);
+          return;
+        case "Delete":
+        case "Backspace":
+          if (state.selectedKeyframe) {
+            e.preventDefault();
+            state.removeKeyframe(state.selectedKeyframe.slot, state.selectedKeyframe.index);
+          }
+          return;
+        case "ArrowUp":
+          e.preventDefault();
+          state.nudgeSelected(0, -1);
+          return;
+        case "ArrowDown":
+          e.preventDefault();
+          state.nudgeSelected(0, 1);
+          return;
+        case "ArrowLeft":
+          e.preventDefault();
+          state.nudgeSelected(-1, 0);
+          return;
+        case "ArrowRight":
+          e.preventDefault();
+          state.nudgeSelected(1, 0);
+          return;
+      }
+
+      // 1–5 quick-select a player by slot index.
+      if (e.key >= "1" && e.key <= "5") {
+        state.selectSlot(Number(e.key) - 1);
+      }
+    }
+
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [store, onSave]);
+}

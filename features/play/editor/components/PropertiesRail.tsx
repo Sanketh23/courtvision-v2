@@ -46,6 +46,22 @@ export function PropertiesRail() {
       </label>
 
       <label className="flex flex-col gap-1">
+        <span className="text-xs text-muted-foreground">Status</span>
+        <select
+          value={play.status}
+          onChange={(e) => patchMeta({ status: e.target.value as typeof play.status })}
+          className="rounded-md border border-input px-2 py-1.5 capitalize"
+        >
+          <option value="draft">Draft</option>
+          <option value="published">Published</option>
+          <option value="archived">Archived</option>
+        </select>
+        <span className="text-[10px] leading-snug text-muted-foreground">
+          Players see published plays only. Save to apply.
+        </span>
+      </label>
+
+      <label className="flex flex-col gap-1">
         <span className="text-xs text-muted-foreground">Formation</span>
         <input
           value={play.formation ?? ""}

@@ -16,7 +16,8 @@ import type { Database } from "@/lib/supabase/types.generated";
 type Client = SupabaseClient<Database>;
 type PlayRow = Database["public"]["Tables"]["plays"]["Row"];
 
-/** A play as listed in the playbook — table columns, not the full body. */
+/** A play as listed in the playbook — table columns plus the raw JSON body
+ * (`data`) so list surfaces can generate thumbnails without a second fetch. */
 export type PlaySummary = {
   id: string;
   teamId: string;
@@ -26,10 +27,16 @@ export type PlaySummary = {
   status: "draft" | "published" | "archived";
   tags: string[];
   durationSeconds: number;
+  /** Number of actions in the play body (sorting + tile metadata). */
+  actionCount: number;
+  createdAt: string;
   updatedAt: string;
+  /** The unvalidated play body; parse through the schema before rendering. */
+  data: unknown;
 };
 
 function toSummary(row: PlayRow): PlaySummary {
+  const body = row.data as { actions?: unknown[] } | null;
   return {
     id: row.id,
     teamId: row.team_id,
@@ -39,7 +46,10 @@ function toSummary(row: PlayRow): PlaySummary {
     status: row.status as PlaySummary["status"],
     tags: row.tags,
     durationSeconds: row.duration_seconds,
+    actionCount: Array.isArray(body?.actions) ? body.actions.length : 0,
+    createdAt: row.created_at,
     updatedAt: row.updated_at,
+    data: row.data,
   };
 }
 

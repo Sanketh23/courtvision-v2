@@ -33,6 +33,12 @@ export async function signIn(input: { email: string; password: string }): Promis
 export async function signOut(): Promise<AuthResult> {
   const supabase = createClient();
   const { error } = await supabase.auth.signOut();
+  // Persisted UI prefs (cv:*) reset on sign out (UI_WORKFLOWS §13.9).
+  if (typeof window !== "undefined") {
+    for (const key of Object.keys(window.localStorage)) {
+      if (key.startsWith("cv:")) window.localStorage.removeItem(key);
+    }
+  }
   return { error: error?.message ?? null };
 }
 

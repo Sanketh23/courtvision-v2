@@ -30,8 +30,8 @@ test("a database-loaded play animates in the viewer", async ({ page }) => {
   await page.getByRole("button", { name: "Create team" }).click();
   await expect(page).toHaveURL(/\/playbook/);
 
-  // No database plays yet.
-  await expect(page.getByText("No plays yet", { exact: false })).toBeVisible();
+  // No database plays yet (M7 coach empty state).
+  await expect(page.getByText("Your playbook is empty")).toBeVisible();
 
   // --- Create a play in the editor and save it to the database ---
   await page.getByRole("link", { name: "+ New play" }).click();

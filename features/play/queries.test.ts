@@ -56,7 +56,7 @@ describe("listPlays", () => {
         tags: ["base"],
         duration_seconds: 5,
         updated_at: "2026-06-01T00:00:00Z",
-        data: {},
+        data: { actions: [{ id: "a1" }, { id: "a2" }] },
         description: null,
         created_at: "2026-06-01T00:00:00Z",
         created_by: "u1",
@@ -76,7 +76,10 @@ describe("listPlays", () => {
         status: "published",
         tags: ["base"],
         durationSeconds: 5,
+        actionCount: 2,
+        createdAt: "2026-06-01T00:00:00Z",
         updatedAt: "2026-06-01T00:00:00Z",
+        data: { actions: [{ id: "a1" }, { id: "a2" }] },
       },
     ]);
   });

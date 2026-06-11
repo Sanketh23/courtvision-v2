@@ -2,9 +2,8 @@ name: CI
 
 on:
   push:
-    branches: [main, m0-project-foundation]
-  pull_request:
     branches: [main]
+  pull_request:
 
 jobs:
   lint-and-check:
@@ -50,6 +49,9 @@ jobs:
         run: pnpm tsc --noEmit
 
       - name: Build
+        env:
+          NEXT_PUBLIC_SUPABASE_URL: https://placeholder.supabase.co
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: ci-placeholder-anon-key
         run: pnpm build
 
   test:
@@ -89,4 +91,4 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Run tests
-        run: pnpm test:run || true
+        run: pnpm test:run

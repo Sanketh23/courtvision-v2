@@ -1,0 +1,49 @@
+# Dependencies
+node_modules/
+.pnp
+.pnp.js
+
+# Next.js
+/.next/
+/out/
+next-env.d.ts
+
+# Production build
+/build
+/dist
+
+# Environment / secrets
+.env
+.env.local
+.env.*.local
+.env.local.*.bak
+
+# TypeScript incremental build info
+*.tsbuildinfo
+
+# MCP / local tooling
+.mcp.json
+
+# Testing
+/coverage
+
+# Husky internals
+.husky/_
+
+# Logs
+*.log
+npm-debug.log*
+pnpm-debug.log*
+
+# OS / editor
+.DS_Store
+*.pem
+.vscode/
+.idea/
+
+# Vercel
+.vercel
+
+# Playwright
+test-results/
+playwright-report/

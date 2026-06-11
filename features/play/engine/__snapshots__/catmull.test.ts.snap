@@ -1,0 +1,11 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`catmullRom > matches known curve values (regression snapshot) 1`] = `
+[
+  12.92,
+  18.59375,
+  30,
+  41.40625,
+  47.08,
+]
+`;

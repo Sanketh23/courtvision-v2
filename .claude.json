@@ -1,0 +1,8 @@
+{
+  "hooks": {
+    "onStop": {
+      "command": "pnpm test:run",
+      "description": "Run tests after task completion"
+    }
+  }
+}

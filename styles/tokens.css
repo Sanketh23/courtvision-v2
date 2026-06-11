@@ -1,0 +1,96 @@
+/*
+ * CourtVision design tokens.
+ *
+ * Semantic CSS variables consumed by Tailwind v4 via `@theme inline` in
+ * app/globals.css (per ARCHITECTURE.md §5.2). Values come from the wireframe
+ * palette (wireframes/*.svg): a primary blue, a zinc neutral ramp, and the
+ * ball/orange accent. Dark mode is a single block redefinition below.
+ *
+ * Naming follows shadcn/ui semantic tokens so the copied primitives work
+ * unchanged; `--ball` is the one CourtVision-specific addition.
+ */
+
+:root {
+  /* Surfaces & text */
+  --background: #fafafa;
+  --foreground: #18181b;
+  --card: #ffffff;
+  --card-foreground: #18181b;
+  --popover: #ffffff;
+  --popover-foreground: #18181b;
+
+  /* Brand */
+  --primary: #2563eb;
+  --primary-foreground: #ffffff;
+
+  /* Neutral roles */
+  --secondary: #f4f4f5;
+  --secondary-foreground: #18181b;
+  --muted: #f4f4f5;
+  --muted-foreground: #71717a;
+  --accent: #eff6ff;
+  --accent-foreground: #1d4ed8;
+
+  /* Feedback */
+  --destructive: #dc2626;
+  --destructive-foreground: #ffffff;
+
+  /* Lines & focus */
+  --border: #e4e4e7;
+  --input: #e4e4e7;
+  --ring: #93c5fd;
+
+  /* CourtVision-specific */
+  --ball: #d97706;
+
+  /* Per-slot player colors (UI_WORKFLOWS §13.3): PG blue, SG teal, then
+     visually distinct families that don't collide with the ball orange. */
+  --slot-0: #2563eb;
+  --slot-1: #0d9488;
+  --slot-2: #7c3aed;
+  --slot-3: #e11d48;
+  --slot-4: #16a34a;
+
+  /* Court rendering */
+  --court-line: #a1a1aa;
+  --court-surface: #ffffff;
+
+  --radius: 0.5rem;
+}
+
+.dark {
+  --background: #18181b;
+  --foreground: #fafafa;
+  --card: #27272a;
+  --card-foreground: #fafafa;
+  --popover: #27272a;
+  --popover-foreground: #fafafa;
+
+  --primary: #3b82f6;
+  --primary-foreground: #ffffff;
+
+  --secondary: #27272a;
+  --secondary-foreground: #fafafa;
+  --muted: #27272a;
+  --muted-foreground: #a1a1aa;
+  --accent: #1d2640;
+  --accent-foreground: #fafafa;
+
+  --destructive: #ef4444;
+  --destructive-foreground: #ffffff;
+
+  --border: #27272a;
+  --input: #3f3f46;
+  --ring: #2563eb;
+
+  --ball: #f59e0b;
+
+  --slot-0: #60a5fa;
+  --slot-1: #2dd4bf;
+  --slot-2: #a78bfa;
+  --slot-3: #fb7185;
+  --slot-4: #4ade80;
+
+  --court-line: #52525b;
+  --court-surface: #27272a;
+}

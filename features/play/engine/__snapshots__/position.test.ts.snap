@@ -1,0 +1,38 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`positionAt > matches known cubic curve positions (regression snapshot) 1`] = `
+[
+  {
+    "x": 22.951388888888886,
+    "y": 47,
+  },
+  {
+    "x": 27.22222222222222,
+    "y": 47,
+  },
+  {
+    "x": 32.1875,
+    "y": 47,
+  },
+  {
+    "x": 37.22222222222222,
+    "y": 47,
+  },
+  {
+    "x": 41.70138888888889,
+    "y": 47,
+  },
+  {
+    "x": 47.7734375,
+    "y": 47,
+  },
+  {
+    "x": 49.0625,
+    "y": 47,
+  },
+  {
+    "x": 49.5703125,
+    "y": 47,
+  },
+]
+`;

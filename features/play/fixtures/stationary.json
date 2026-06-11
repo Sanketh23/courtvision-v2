@@ -1,0 +1,67 @@
+{
+  "id": "play_003",
+  "teamId": "team_001",
+  "name": "Base Formation",
+  "category": "offense",
+  "formation": "5-out",
+  "tags": [],
+  "status": "draft",
+  "duration": 2000,
+  "players": [
+    {
+      "id": "player_0",
+      "slot": 0,
+      "label": "PG",
+      "path": {
+        "keyframes": [{ "time": 0, "x": 25, "y": 30 }, { "time": 2000, "x": 25, "y": 30 }],
+        "type": "cubic"
+      }
+    },
+    {
+      "id": "player_1",
+      "slot": 1,
+      "label": "SG",
+      "path": {
+        "keyframes": [{ "time": 0, "x": 75, "y": 30 }, { "time": 2000, "x": 75, "y": 30 }],
+        "type": "cubic"
+      }
+    },
+    {
+      "id": "player_2",
+      "slot": 2,
+      "label": "SF",
+      "path": {
+        "keyframes": [{ "time": 0, "x": 12, "y": 60 }, { "time": 2000, "x": 12, "y": 60 }],
+        "type": "cubic"
+      }
+    },
+    {
+      "id": "player_3",
+      "slot": 3,
+      "label": "PF",
+      "path": {
+        "keyframes": [{ "time": 0, "x": 88, "y": 60 }, { "time": 2000, "x": 88, "y": 60 }],
+        "type": "cubic"
+      }
+    },
+    {
+      "id": "player_4",
+      "slot": 4,
+      "label": "C",
+      "path": {
+        "keyframes": [{ "time": 0, "x": 50, "y": 75 }, { "time": 2000, "x": 50, "y": 75 }],
+        "type": "cubic"
+      }
+    }
+  ],
+  "ball": {
+    "keyframes": [
+      { "time": 0, "x": 25, "y": 30, "inFlight": false },
+      { "time": 2000, "x": 25, "y": 30, "inFlight": false }
+    ],
+    "type": "cubic"
+  },
+  "actions": [],
+  "createdAt": "2026-02-01T09:00:00Z",
+  "createdBy": "user_coach_001"
+}

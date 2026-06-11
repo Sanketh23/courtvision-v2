@@ -74,7 +74,56 @@ describe("editor store", () => {
   it("selecting a keyframe also selects its slot", () => {
     const s = store();
     s.getState().selectKeyframe({ slot: 3, index: 0 });
-    expect(s.getState().selectedSlot).toBe(3);
+    expect(s.getState().selectedSlots).toEqual([3]);
+  });
+
+  it("toggleSlot builds an ordered multi-selection", () => {
+    const s = store();
+    s.getState().selectSlot(0);
+    s.getState().toggleSlot(1);
+    expect(s.getState().selectedSlots).toEqual([0, 1]);
+    s.getState().toggleSlot(0); // toggle off keeps order of the rest
+    expect(s.getState().selectedSlots).toEqual([1]);
+  });
+
+  it("createAction adds an action at the cursor and regenerates the ball", () => {
+    const s = store();
+    s.getState().setCursor(1000);
+    s.getState().selectSlot(0);
+    s.getState().toggleSlot(1);
+    s.getState().createAction("pass");
+
+    const { play } = s.getState();
+    expect(play.actions).toHaveLength(1);
+    expect(play.actions[0]).toMatchObject({ type: "pass", from: "player_0", to: "player_1" });
+    // The derived ball now contains an in-flight keyframe.
+    expect(play.ball.keyframes.some((kf) => kf.inFlight)).toBe(true);
+    expect(s.getState().canUndo()).toBe(true);
+  });
+
+  it("undo after createAction restores the previous ball too", () => {
+    const s = store();
+    s.getState().setCursor(1000);
+    s.getState().selectSlot(0);
+    s.getState().toggleSlot(1);
+    s.getState().createAction("pass");
+    s.getState().undo();
+    const { play } = s.getState();
+    expect(play.actions).toHaveLength(0);
+    expect(play.ball.keyframes.some((kf) => kf.inFlight)).toBe(false);
+  });
+
+  it("removeAction deletes and clears the action selection", () => {
+    const s = store();
+    s.getState().setCursor(500);
+    s.getState().selectSlot(0);
+    s.getState().createAction("dribble");
+    const id = s.getState().play.actions[0]?.id;
+    if (!id) throw new Error("missing action id");
+    s.getState().selectAction(id);
+    s.getState().removeAction(id);
+    expect(s.getState().play.actions).toHaveLength(0);
+    expect(s.getState().selectedActionId).toBeNull();
   });
 
   it("markSaved records the id and clears the dirty flag", () => {

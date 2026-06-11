@@ -1,7 +1,7 @@
 /** The ball: orange dot, with a flight ring while passed or shot. */
 export function BallMarker({ x, y, inFlight }: { x: number; y: number; inFlight: boolean }) {
   return (
-    <g transform={`translate(${x} ${y})`}>
+    <g transform={`translate(${x} ${y})`} pointerEvents="none">
       {inFlight && (
         <circle
           r="2.4"

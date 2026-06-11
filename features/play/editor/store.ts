@@ -14,6 +14,14 @@
 
 import { createStore } from "zustand/vanilla";
 import {
+  addAction,
+  deleteAction,
+  moveActionTime,
+  resizeAction,
+  withRegeneratedBall,
+} from "@/features/play/editor/action-mutations";
+import type { EditorActionType } from "@/features/play/editor/action-rules";
+import {
   deleteKeyframe,
   moveKeyframePosition,
   moveKeyframeTime,
@@ -34,8 +42,10 @@ export type EditorState = {
   play: Play;
   /** Database id once saved; null for an unsaved new play. */
   playId: string | null;
-  selectedSlot: number | null;
+  /** Ordered multi-selection: first = source for 2-player actions. */
+  selectedSlots: number[];
   selectedKeyframe: KeyframeSelection | null;
+  selectedActionId: string | null;
   /** Timeline cursor, in milliseconds. */
   cursor: number;
   isPlaying: boolean;
@@ -48,7 +58,10 @@ export type EditorState = {
 
   // selection / transport (non-committing)
   selectSlot: (slot: number | null) => void;
+  /** Shift-click: add/remove a slot from the ordered selection. */
+  toggleSlot: (slot: number) => void;
   selectKeyframe: (selection: KeyframeSelection | null) => void;
+  selectAction: (actionId: string | null) => void;
   setCursor: (time: number) => void;
   setPlaying: (playing: boolean) => void;
   setShowPaths: (show: boolean) => void;
@@ -62,6 +75,12 @@ export type EditorState = {
   changeDuration: (duration: number) => void;
   rename: (slot: number, label: string) => void;
   patchMeta: (meta: PlayMeta) => void;
+
+  // actions (M6) — all committing, ball regenerates automatically
+  createAction: (type: EditorActionType) => void;
+  moveAction: (actionId: string, time: number) => void;
+  resizeActionTo: (actionId: string, duration: number) => void;
+  removeAction: (actionId: string) => void;
 
   // history
   undo: () => void;
@@ -90,8 +109,11 @@ export function createEditorStore(initialPlay: Play, playId: string | null) {
     /** Apply a pure mutator, pushing the prior play onto the undo stack. */
     const commit = (mutate: (play: Play) => Play) => {
       const { play, past } = get();
-      const next = mutate(play);
-      if (next === play) return; // no-op (e.g. protected delete) — skip history
+      const mutated = mutate(play);
+      if (mutated === play) return; // no-op (e.g. protected delete) — skip history
+      // The ball is derived data: regenerate it from actions on every edit
+      // (DATA_MODEL §3.3 — the editor never hand-writes ball positions).
+      const next = withRegeneratedBall(mutated);
       set({
         play: next,
         past: [...past, play].slice(-MAX_HISTORY),
@@ -103,8 +125,9 @@ export function createEditorStore(initialPlay: Play, playId: string | null) {
     return {
       play: initialPlay,
       playId,
-      selectedSlot: null,
+      selectedSlots: [],
       selectedKeyframe: null,
+      selectedActionId: null,
       cursor: 0,
       isPlaying: false,
       showPaths: readShowPaths(),
@@ -112,12 +135,29 @@ export function createEditorStore(initialPlay: Play, playId: string | null) {
       past: [],
       future: [],
 
-      selectSlot: (slot) => set({ selectedSlot: slot, selectedKeyframe: null }),
+      selectSlot: (slot) =>
+        set({
+          selectedSlots: slot === null ? [] : [slot],
+          selectedKeyframe: null,
+          selectedActionId: null,
+        }),
+      toggleSlot: (slot) => {
+        const current = get().selectedSlots;
+        set({
+          selectedSlots: current.includes(slot)
+            ? current.filter((s) => s !== slot)
+            : [...current, slot],
+          selectedKeyframe: null,
+          selectedActionId: null,
+        });
+      },
       selectKeyframe: (selection) =>
         set({
           selectedKeyframe: selection,
-          selectedSlot: selection?.slot ?? get().selectedSlot,
+          selectedSlots: selection ? [selection.slot] : get().selectedSlots,
+          selectedActionId: null,
         }),
+      selectAction: (actionId) => set({ selectedActionId: actionId, selectedKeyframe: null }),
       setCursor: (time) => set({ cursor: Math.max(0, time) }),
       setPlaying: (playing) => set({ isPlaying: playing }),
       setShowPaths: (show) => {
@@ -147,6 +187,17 @@ export function createEditorStore(initialPlay: Play, playId: string | null) {
         );
       },
       changeDuration: (duration) => commit((play) => setDuration(play, duration)),
+      createAction: (type) => {
+        const { selectedSlots, cursor } = get();
+        commit((play) => addAction(play, type, selectedSlots, cursor));
+      },
+      moveAction: (actionId, time) => commit((play) => moveActionTime(play, actionId, time)),
+      resizeActionTo: (actionId, duration) =>
+        commit((play) => resizeAction(play, actionId, duration)),
+      removeAction: (actionId) => {
+        commit((play) => deleteAction(play, actionId));
+        set({ selectedActionId: null });
+      },
       rename: (slot, label) => commit((play) => renamePlayer(play, slot, label)),
       patchMeta: (meta) => commit((play) => updateMeta(play, meta)),
 

@@ -1,6 +1,8 @@
 "use client";
 
+import { useMemo } from "react";
 import { useEditor } from "@/features/play/editor/store-context";
+import { formatSeconds, stepsFromActions } from "@/features/play/viewer/steps";
 
 /**
  * Right rail (UI_WORKFLOWS §7.5): play properties. Edits flow straight into
@@ -86,6 +88,57 @@ export function PropertiesRail() {
           className="resize-none rounded-md border border-input px-2 py-1.5"
         />
       </label>
+
+      <StepsSection />
     </div>
+  );
+}
+
+/** The play's actions in time order (ROADMAP M6: "steps list reflects
+ * actions"). Clicking a step jumps the cursor and selects the action. */
+function StepsSection() {
+  const play = useEditor((s) => s.play);
+  const selectedActionId = useEditor((s) => s.selectedActionId);
+  const setCursor = useEditor((s) => s.setCursor);
+  const selectAction = useEditor((s) => s.selectAction);
+
+  const steps = useMemo(
+    () => stepsFromActions(play.actions, play.players),
+    [play.actions, play.players],
+  );
+
+  return (
+    <section>
+      <h2 className="mb-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+        Steps
+      </h2>
+      {steps.length === 0 ? (
+        <p className="text-xs text-muted-foreground">No actions yet.</p>
+      ) : (
+        <ol className="space-y-0.5">
+          {steps.map((step) => (
+            <li key={step.id}>
+              <button
+                type="button"
+                onClick={() => {
+                  setCursor(step.time);
+                  selectAction(step.id);
+                }}
+                className={
+                  step.id === selectedActionId
+                    ? "flex w-full items-baseline gap-2 rounded bg-accent px-2 py-1 text-left text-xs text-accent-foreground"
+                    : "flex w-full items-baseline gap-2 rounded px-2 py-1 text-left text-xs hover:bg-secondary"
+                }
+              >
+                <span className="w-8 shrink-0 tabular-nums text-[10px] text-muted-foreground">
+                  {formatSeconds(step.time)}
+                </span>
+                <span>{step.description}</span>
+              </button>
+            </li>
+          ))}
+        </ol>
+      )}
+    </section>
   );
 }

@@ -6,6 +6,8 @@ import { defineConfig, devices } from "@playwright/test";
  */
 export default defineConfig({
   testDir: "./tests/e2e",
+  // Dev-server compiles under suite load make short waits flaky.
+  expect: { timeout: 10_000 },
   fullyParallel: false,
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 1 : 0,

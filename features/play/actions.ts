@@ -60,3 +60,25 @@ export async function savePlayAction(input: {
   });
   return { id };
 }
+
+/**
+ * Restore a play to an earlier version (UI_WORKFLOWS §10.2). The database
+ * function copies the old data onto the play; the snapshot trigger records
+ * that as a NEW version annotated change_source='restore' — earlier versions
+ * are never destroyed. The function itself enforces the coach check.
+ * Returns the new version number.
+ */
+export async function restorePlayAction(input: {
+  playId: string;
+  versionNumber: number;
+}): Promise<{ newVersion: number }> {
+  await requireAuth();
+  const supabase = await createClient();
+
+  const { data, error } = await supabase.rpc("restore_play_version", {
+    p_play_id: input.playId,
+    p_version: input.versionNumber,
+  });
+  if (error) throw new Error(error.message);
+  return { newVersion: data as number };
+}

@@ -1,6 +1,8 @@
 "use client";
 
 import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { VersionHistoryModal } from "@/features/play/editor/components/VersionHistoryModal";
 import { useEditor } from "@/features/play/editor/store-context";
 import { cn } from "@/lib/utils";
 
@@ -12,6 +14,8 @@ import { cn } from "@/lib/utils";
  */
 export function EditorTopBar({ onSave }: { onSave: () => void }) {
   const router = useRouter();
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [historyOpen, setHistoryOpen] = useState(false);
 
   const play = useEditor((s) => s.play);
   const playId = useEditor((s) => s.playId);
@@ -95,6 +99,39 @@ export function EditorTopBar({ onSave }: { onSave: () => void }) {
         >
           Save
         </button>
+
+        {/* Kebab menu (UI_WORKFLOWS §10: version history entry point) */}
+        <div className="relative">
+          <button
+            type="button"
+            onClick={() => setMenuOpen((open) => !open)}
+            aria-label="More options"
+            aria-expanded={menuOpen}
+            className="rounded-md px-2 py-1.5 text-muted-foreground hover:bg-secondary"
+          >
+            ⋯
+          </button>
+          {menuOpen && (
+            <div className="absolute right-0 z-20 mt-1 w-44 rounded-md border border-border bg-card py-1 shadow-md">
+              <button
+                type="button"
+                disabled={!playId}
+                title={playId ? undefined : "Save the play first"}
+                onClick={() => {
+                  setMenuOpen(false);
+                  setHistoryOpen(true);
+                }}
+                className="block w-full px-3 py-1.5 text-left text-sm hover:bg-secondary disabled:opacity-50"
+              >
+                Version history
+              </button>
+            </div>
+          )}
+        </div>
+
+        {historyOpen && playId && (
+          <VersionHistoryModal playId={playId} onClose={() => setHistoryOpen(false)} />
+        )}
       </div>
     </header>
   );

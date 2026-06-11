@@ -24,7 +24,16 @@ export async function savePlayAction(input: {
   const user = await requireAuth();
   const supabase = await createClient();
 
-  const play: Play = playSchema.parse(input.play);
+  let play: Play = playSchema.parse(input.play);
+
+  // Publish stamping is server-authoritative (UI_WORKFLOWS §5 status
+  // management): first transition to published records when and by whom;
+  // moving out of published clears both.
+  if (play.status === "published" && !play.publishedAt) {
+    play = { ...play, publishedAt: new Date().toISOString(), publishedBy: user.id };
+  } else if (play.status !== "published") {
+    play = { ...play, publishedAt: undefined, publishedBy: undefined };
+  }
 
   if (input.playId) {
     await updatePlay(supabase, input.playId, play);

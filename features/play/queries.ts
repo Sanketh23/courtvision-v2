@@ -146,3 +146,55 @@ export async function updatePlay(client: Client, playId: string, play: Play): Pr
 
   if (error) throw new Error(error.message);
 }
+
+/** A version row as listed in the history modal (no body — fetched lazily). */
+export type PlayVersionSummary = {
+  versionNumber: number;
+  changeSource: "manual" | "restore" | "ai";
+  changeSummary: string;
+  restoredFromVersion: number | null;
+  createdAt: string;
+};
+
+/** A play's versions, newest first (UI_WORKFLOWS §10.2). RLS scopes rows. */
+export async function listPlayVersions(
+  client: Client,
+  playId: string,
+): Promise<PlayVersionSummary[]> {
+  const { data, error } = await client
+    .from("play_versions")
+    .select("version_number, change_source, change_summary, restored_from_version, created_at")
+    .eq("play_id", playId)
+    .order("version_number", { ascending: false });
+
+  if (error) throw new Error(error.message);
+  return (data ?? []).map((row) => ({
+    versionNumber: row.version_number,
+    changeSource: row.change_source as PlayVersionSummary["changeSource"],
+    changeSummary: row.change_summary,
+    restoredFromVersion: row.restored_from_version,
+    createdAt: row.created_at,
+  }));
+}
+
+/** One version's validated play body, for the preview pane (§10.3). */
+export async function getPlayVersionData(
+  client: Client,
+  playId: string,
+  versionNumber: number,
+): Promise<Play | null> {
+  const { data, error } = await client
+    .from("play_versions")
+    .select("data")
+    .eq("play_id", playId)
+    .eq("version_number", versionNumber)
+    .maybeSingle();
+
+  if (error) throw new Error(error.message);
+  if (!data) return null;
+  const result = playSchema.safeParse(data.data);
+  if (!result.success) {
+    throw new Error(`Version ${versionNumber} failed schema validation: ${result.error.message}`);
+  }
+  return result.data;
+}

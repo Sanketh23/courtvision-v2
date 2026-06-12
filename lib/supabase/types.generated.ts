@@ -34,6 +34,50 @@ export type Database = {
   }
   public: {
     Tables: {
+      play_versions: {
+        Row: {
+          change_source: string
+          change_summary: string
+          created_at: string
+          created_by: string
+          data: Json
+          id: string
+          play_id: string
+          restored_from_version: number | null
+          version_number: number
+        }
+        Insert: {
+          change_source?: string
+          change_summary?: string
+          created_at?: string
+          created_by: string
+          data: Json
+          id?: string
+          play_id: string
+          restored_from_version?: number | null
+          version_number: number
+        }
+        Update: {
+          change_source?: string
+          change_summary?: string
+          created_at?: string
+          created_by?: string
+          data?: Json
+          id?: string
+          play_id?: string
+          restored_from_version?: number | null
+          version_number?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "play_versions_play_id_fkey"
+            columns: ["play_id"]
+            isOneToOne: false
+            referencedRelation: "plays"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       plays: {
         Row: {
           category: string
@@ -175,6 +219,10 @@ export type Database = {
       }
       get_user_role: { Args: { p_team_id: string }; Returns: string }
       is_team_member: { Args: { p_team_id: string }; Returns: boolean }
+      restore_play_version: {
+        Args: { p_play_id: string; p_version: number }
+        Returns: number
+      }
     }
     Enums: {
       [_ in never]: never

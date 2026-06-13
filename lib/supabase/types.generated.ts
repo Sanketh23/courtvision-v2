@@ -34,6 +34,35 @@ export type Database = {
   }
   public: {
     Tables: {
+      play_progress: {
+        Row: {
+          id: string
+          play_id: string
+          studied_at: string
+          user_id: string
+        }
+        Insert: {
+          id?: string
+          play_id: string
+          studied_at?: string
+          user_id: string
+        }
+        Update: {
+          id?: string
+          play_id?: string
+          studied_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "play_progress_play_id_fkey"
+            columns: ["play_id"]
+            isOneToOne: false
+            referencedRelation: "plays"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       play_versions: {
         Row: {
           change_source: string
@@ -215,6 +244,17 @@ export type Database = {
         Returns: {
           id: string
           name: string
+        }[]
+      }
+      get_team_members: {
+        Args: { p_team_id: string }
+        Returns: {
+          email: string
+          full_name: string
+          joined_at: string
+          membership_id: string
+          role: string
+          user_id: string
         }[]
       }
       get_user_role: { Args: { p_team_id: string }; Returns: string }

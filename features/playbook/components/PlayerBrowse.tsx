@@ -23,10 +23,14 @@ import { cn } from "@/lib/utils";
 export function PlayerBrowse({
   items,
   thumbnails,
+  studiedIds,
 }: {
   items: PlaybookItem[];
   thumbnails: Record<string, ReactNode>;
+  /** Plays this player has marked studied (drives the unstudied dot). */
+  studiedIds: string[];
 }) {
+  const studied = new Set(studiedIds);
   const [search, setSearch] = useState("");
   const [category, setCategory] = useState<string | null>(null);
   const [sort, setSort] = useState<"recently-created" | "alphabetical">("recently-created");
@@ -142,6 +146,7 @@ export function PlayerBrowse({
                   thumbnail={thumbnails[item.id]}
                   variant="list"
                   showStatus={false}
+                  showUnstudiedDot={!studied.has(item.id)}
                 />
               </li>
             ))}

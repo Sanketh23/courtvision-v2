@@ -198,3 +198,10 @@ export async function getPlayVersionData(
   }
   return result.data;
 }
+
+/** Play ids the current user has marked studied (RLS scopes to the user). */
+export async function listStudiedPlayIds(client: Client): Promise<Set<string>> {
+  const { data, error } = await client.from("play_progress").select("play_id");
+  if (error) throw new Error(error.message);
+  return new Set((data ?? []).map((row) => row.play_id));
+}

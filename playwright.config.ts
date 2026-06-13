@@ -6,7 +6,10 @@ import { defineConfig, devices } from "@playwright/test";
  */
 export default defineConfig({
   testDir: "./tests/e2e",
-  // Dev-server compiles under suite load make short waits flaky.
+  // Dev-server compiles under suite load make short waits flaky. The polish
+  // flow drives two browser contexts through several cold-compiled routes, so
+  // give every test generous headroom.
+  timeout: 90_000,
   expect: { timeout: 10_000 },
   fullyParallel: false,
   forbidOnly: !!process.env.CI,

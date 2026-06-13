@@ -13,11 +13,14 @@ export function PlayTile({
   thumbnail,
   variant,
   showStatus,
+  showUnstudiedDot = false,
 }: {
   item: PlaybookItem;
   thumbnail: ReactNode;
   variant: "grid" | "list" | "strip";
   showStatus: boolean;
+  /** Unstudied indicator for the player list (UI_WORKFLOWS §6.4). */
+  showUnstudiedDot?: boolean;
 }) {
   const meta = `Edited ${formatRelativeTime(item.updatedAt)} · ${item.durationSeconds.toFixed(1)}s · ${item.actionCount} ${item.actionCount === 1 ? "action" : "actions"}`;
 
@@ -68,6 +71,14 @@ export function PlayTile({
             : `${item.category} · ${item.durationSeconds.toFixed(1)}s`}
         </p>
       </div>
+      {showUnstudiedDot && (
+        <span
+          role="img"
+          title="Not studied yet"
+          aria-label="Not studied yet"
+          className="h-2 w-2 shrink-0 rounded-full bg-primary"
+        />
+      )}
     </Link>
   );
 }

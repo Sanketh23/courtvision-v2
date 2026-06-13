@@ -82,3 +82,29 @@ export async function restorePlayAction(input: {
   if (error) throw new Error(error.message);
   return { newVersion: data as number };
 }
+
+/**
+ * Mark / unmark a play as studied for the current user (UI_WORKFLOWS §8.7).
+ * play_progress RLS restricts rows to the acting user.
+ */
+export async function setStudiedAction(input: { playId: string; studied: boolean }): Promise<void> {
+  const user = await requireAuth();
+  const supabase = await createClient();
+
+  if (input.studied) {
+    const { error } = await supabase
+      .from("play_progress")
+      .upsert(
+        { play_id: input.playId, user_id: user.id },
+        { onConflict: "play_id,user_id", ignoreDuplicates: true },
+      );
+    if (error) throw new Error(error.message);
+  } else {
+    const { error } = await supabase
+      .from("play_progress")
+      .delete()
+      .eq("play_id", input.playId)
+      .eq("user_id", user.id);
+    if (error) throw new Error(error.message);
+  }
+}

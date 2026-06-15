@@ -4,6 +4,8 @@ import { fixturePlays } from "@/features/play/fixtures";
 import { getPlay } from "@/features/play/queries";
 import type { Play } from "@/features/play/schemas";
 import { PlayViewer } from "@/features/play/viewer";
+import { MarkStudied } from "@/features/play/viewer/components/MarkStudied";
+import { requireAuth } from "@/lib/auth";
 import { createClient } from "@/lib/supabase/server";
 
 /**
@@ -17,19 +19,43 @@ import { createClient } from "@/lib/supabase/server";
  */
 export default async function PlayPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
+  const user = await requireAuth();
+  const supabase = await createClient();
 
   let play: Play | null = null;
+  let isDbPlay = true;
   try {
-    const supabase = await createClient();
     play = await getPlay(supabase, id);
   } catch {
     // Non-UUID ids (e.g. the fixture "play_001") make Postgres throw on the
     // uuid comparison; fall through to the fixture lookup below.
     play = null;
   }
-  play ??= fixturePlays[id] ?? null;
+  if (!play) {
+    play = fixturePlays[id] ?? null;
+    isDbPlay = false;
+  }
 
   if (!play) notFound();
+
+  // Players get the "Mark studied" footer (§8.7) on real plays only.
+  const { data: membership } = await supabase
+    .from("team_memberships")
+    .select("role")
+    .eq("user_id", user.id)
+    .limit(1)
+    .maybeSingle();
+  const isPlayer = membership?.role === "player";
+
+  let isStudied = false;
+  if (isPlayer && isDbPlay) {
+    const { data: progress } = await supabase
+      .from("play_progress")
+      .select("id")
+      .eq("play_id", id)
+      .maybeSingle();
+    isStudied = Boolean(progress);
+  }
 
   return (
     <main className="mx-auto max-w-4xl px-4 py-6 sm:px-6">
@@ -49,6 +75,11 @@ export default async function PlayPage({ params }: { params: Promise<{ id: strin
         Playbook
       </Link>
       <PlayViewer play={play} />
+      {isPlayer && isDbPlay && (
+        <div className="mt-6">
+          <MarkStudied playId={id} initialStudied={isStudied} />
+        </div>
+      )}
     </main>
   );
 }

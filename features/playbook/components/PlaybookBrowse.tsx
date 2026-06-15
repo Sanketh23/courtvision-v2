@@ -33,11 +33,13 @@ export function PlaybookBrowse({
   items,
   thumbnails,
   initialCategory,
+  studiedIds = [],
 }: {
   role: "coach" | "player";
   items: PlaybookItem[];
   thumbnails: Record<string, ReactNode>;
   initialCategory: string | null;
+  studiedIds?: string[];
 }) {
   const [filters, setFilters] = useState<PlaybookFilters>({
     ...EMPTY_FILTERS,
@@ -86,7 +88,7 @@ export function PlaybookBrowse({
   }, [view]);
 
   if (role === "player") {
-    return <PlayerBrowse items={items} thumbnails={thumbnails} />;
+    return <PlayerBrowse items={items} thumbnails={thumbnails} studiedIds={studiedIds} />;
   }
 
   return (

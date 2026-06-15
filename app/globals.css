@@ -47,4 +47,27 @@
     background-color: var(--color-background);
     color: var(--color-foreground);
   }
+
+  /*
+   * Global keyboard-focus ring (CONVENTIONS §14 / UI_WORKFLOWS §13.8: visible
+   * focus everywhere). Covers the raw button/input/select/a/[tabindex]
+   * elements outside the shadcn primitives, which carry their own rings.
+   * :focus-visible keeps it keyboard-only, so mouse clicks stay clean.
+   */
+  :focus-visible {
+    outline: 2px solid var(--color-ring);
+    outline-offset: 2px;
+  }
+
+  /* Respect reduced-motion for decorative transitions/animations only;
+     the play animation itself is content and keeps running.
+     !important is required to override Tailwind utility durations. */
+  @media (prefers-reduced-motion: reduce) {
+    *:not(svg *) {
+      /* biome-ignore lint/complexity/noImportantStyles: must beat utilities */
+      transition-duration: 0.01ms !important;
+      /* biome-ignore lint/complexity/noImportantStyles: must beat utilities */
+      animation-duration: 0.01ms !important;
+    }
+  }
 }

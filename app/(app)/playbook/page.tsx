@@ -2,7 +2,7 @@ import Link from "next/link";
 import type { ReactNode } from "react";
 import { PlayThumbnail } from "@/features/play/court/PlayThumbnail";
 import { fixturePlays } from "@/features/play/fixtures";
-import { listPlays } from "@/features/play/queries";
+import { listPlays, listStudiedPlayIds } from "@/features/play/queries";
 import { PlaybookBrowse, type PlaybookItem } from "@/features/playbook";
 import { requireAuth } from "@/lib/auth";
 import { createClient } from "@/lib/supabase/server";
@@ -40,6 +40,8 @@ export default async function PlaybookPage({
   const isCoach = role === "coach";
 
   const summaries = teamId ? await listPlays(supabase, teamId) : [];
+  // Third (and final) query of the page — budget is ≤3 (ARCH §16).
+  const studiedIds = isCoach || !teamId ? [] : [...(await listStudiedPlayIds(supabase))];
 
   const items: PlaybookItem[] = summaries.map((play) => ({
     id: play.id,
@@ -71,7 +73,17 @@ export default async function PlaybookPage({
           )}
           {!isCoach && <span className="text-sm text-muted-foreground">Playbook</span>}
         </div>
-        <SignOutButton />
+        <nav className="flex items-center gap-1 text-sm">
+          {isCoach && (
+            <Link href="/team" className="rounded-md px-2.5 py-1.5 hover:bg-secondary">
+              Team
+            </Link>
+          )}
+          <Link href="/account" className="rounded-md px-2.5 py-1.5 hover:bg-secondary">
+            Account
+          </Link>
+          <SignOutButton />
+        </nav>
       </header>
 
       {/* Invite onboarding strip (§4.4 / §5.8) */}
@@ -94,6 +106,7 @@ export default async function PlaybookPage({
         items={items}
         thumbnails={thumbnails}
         initialCategory={category ?? null}
+        studiedIds={studiedIds}
       />
 
       {/* Sample plays: demo content while the playbook is empty (coaches). */}

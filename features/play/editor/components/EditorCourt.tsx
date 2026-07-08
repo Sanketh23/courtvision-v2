@@ -31,6 +31,8 @@ export function EditorCourt() {
   const primarySlot = selectedSlots[0] ?? null;
   const dragPlayerTo = useEditor((s) => s.dragPlayerTo);
   const moveKeyframePos = useEditor((s) => s.moveKeyframePos);
+  const beginGesture = useEditor((s) => s.beginGesture);
+  const endGesture = useEditor((s) => s.endGesture);
 
   const svgRef = useRef<SVGSVGElement>(null);
 
@@ -57,12 +59,14 @@ export function EditorCourt() {
       selectSlot(slot);
       const target = e.currentTarget as Element;
       target.setPointerCapture(e.pointerId);
+      beginGesture();
 
       const move = (ev: PointerEvent) => {
         const { x, y } = toCourt(ev.clientX, ev.clientY);
         dragPlayerTo(slot, x, y);
       };
       const up = () => {
+        endGesture();
         target.releasePointerCapture(e.pointerId);
         window.removeEventListener("pointermove", move);
         window.removeEventListener("pointerup", up);
@@ -70,7 +74,7 @@ export function EditorCourt() {
       window.addEventListener("pointermove", move);
       window.addEventListener("pointerup", up);
     },
-    [selectSlot, toggleSlot, toCourt, dragPlayerTo],
+    [selectSlot, toggleSlot, toCourt, dragPlayerTo, beginGesture, endGesture],
   );
 
   // Drag a keyframe dot → move that keyframe's position.
@@ -81,12 +85,14 @@ export function EditorCourt() {
       selectKeyframe({ slot, index });
       const target = e.currentTarget as Element;
       target.setPointerCapture(e.pointerId);
+      beginGesture();
 
       const move = (ev: PointerEvent) => {
         const { x, y } = toCourt(ev.clientX, ev.clientY);
         moveKeyframePos(slot, index, x, y);
       };
       const up = () => {
+        endGesture();
         target.releasePointerCapture(e.pointerId);
         window.removeEventListener("pointermove", move);
         window.removeEventListener("pointerup", up);
@@ -94,7 +100,7 @@ export function EditorCourt() {
       window.addEventListener("pointermove", move);
       window.addEventListener("pointerup", up);
     },
-    [selectKeyframe, moveKeyframePos, toCourt],
+    [selectKeyframe, moveKeyframePos, toCourt, beginGesture, endGesture],
   );
 
   const sampled = useMemo(

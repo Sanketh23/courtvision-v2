@@ -7,6 +7,38 @@ function store() {
   return createEditorStore(play, null);
 }
 
+describe("editor store gestures", () => {
+  it("coalesces a drag into a single undo step", () => {
+    const s = store();
+    s.getState().setCursor(2000);
+    // Simulate a drag: many position updates between begin/endGesture.
+    s.getState().beginGesture();
+    s.getState().dragPlayerTo(0, 50, 50);
+    s.getState().dragPlayerTo(0, 55, 50);
+    s.getState().dragPlayerTo(0, 60, 50);
+    s.getState().endGesture();
+
+    // The whole drag is one history entry; one undo reverts it entirely.
+    expect(s.getState().play.players[0]?.path.keyframes).toHaveLength(3);
+    s.getState().undo();
+    expect(s.getState().play.players[0]?.path.keyframes).toHaveLength(2);
+    expect(s.getState().canUndo()).toBe(false);
+  });
+
+  it("without a gesture, each edit is its own undo step", () => {
+    const s = store();
+    s.getState().setCursor(1000);
+    s.getState().dragPlayerTo(0, 50, 50);
+    s.getState().setCursor(2000);
+    s.getState().dragPlayerTo(0, 60, 60);
+    // Two separate edits → two undo steps.
+    s.getState().undo();
+    expect(s.getState().play.players[0]?.path.keyframes).toHaveLength(3);
+    s.getState().undo();
+    expect(s.getState().play.players[0]?.path.keyframes).toHaveLength(2);
+  });
+});
+
 describe("editor store", () => {
   it("starts clean with no history", () => {
     const s = store();

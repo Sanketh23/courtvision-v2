@@ -16,12 +16,19 @@ export function useEditorShortcuts(onSave: () => void) {
   const store = useEditorStoreApi();
 
   useEffect(() => {
+    // Non-text controls (range scrubber, checkboxes, buttons) have nothing to
+    // text-undo, so they must NOT swallow editor shortcuts — only true
+    // text-entry fields should.
+    const NON_TEXT_INPUT_TYPES = new Set(["range", "checkbox", "radio", "button", "submit"]);
+
     function isTyping(target: EventTarget | null): boolean {
       const el = target as HTMLElement | null;
       const tag = el?.tagName;
-      return (
-        tag === "INPUT" || tag === "TEXTAREA" || tag === "SELECT" || el?.isContentEditable === true
-      );
+      if (tag === "INPUT") {
+        const type = (el as HTMLInputElement).type;
+        return !NON_TEXT_INPUT_TYPES.has(type);
+      }
+      return tag === "TEXTAREA" || tag === "SELECT" || el?.isContentEditable === true;
     }
 
     function onKeyDown(e: KeyboardEvent) {

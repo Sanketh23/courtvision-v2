@@ -27,6 +27,8 @@ export function Timeline() {
   const moveKeyframeAtTime = useEditor((s) => s.moveKeyframeAtTime);
   const moveAction = useEditor((s) => s.moveAction);
   const resizeActionTo = useEditor((s) => s.resizeActionTo);
+  const beginGesture = useEditor((s) => s.beginGesture);
+  const endGesture = useEditor((s) => s.endGesture);
 
   const [lanesOpen, setLanesOpen] = useState(true);
   const duration = play.duration;
@@ -122,6 +124,8 @@ export function Timeline() {
                 onSelectAction={selectAction}
                 onMoveAction={moveAction}
                 onResizeAction={resizeActionTo}
+                onGestureStart={beginGesture}
+                onGestureEnd={endGesture}
               />
             );
           })}
@@ -148,6 +152,8 @@ function Lane({
   onSelectAction,
   onMoveAction,
   onResizeAction,
+  onGestureStart,
+  onGestureEnd,
 }: {
   slot: number;
   label: string;
@@ -162,6 +168,8 @@ function Lane({
   onSelectAction: (id: string) => void;
   onMoveAction: (id: string, time: number) => void;
   onResizeAction: (id: string, duration: number) => void;
+  onGestureStart: () => void;
+  onGestureEnd: () => void;
 }) {
   const trackRef = useRef<HTMLDivElement>(null);
 
@@ -183,8 +191,10 @@ function Lane({
       onSelectKeyframe(index);
       const target = e.currentTarget as Element;
       target.setPointerCapture(e.pointerId);
+      onGestureStart();
       const move = (ev: PointerEvent) => onMoveKeyframe(index, timeFromClientX(ev.clientX));
       const up = () => {
+        onGestureEnd();
         target.releasePointerCapture(e.pointerId);
         window.removeEventListener("pointermove", move);
         window.removeEventListener("pointerup", up);
@@ -192,7 +202,7 @@ function Lane({
       window.addEventListener("pointermove", move);
       window.addEventListener("pointerup", up);
     },
-    [onMoveKeyframe, onSelectKeyframe, timeFromClientX],
+    [onMoveKeyframe, onSelectKeyframe, timeFromClientX, onGestureStart, onGestureEnd],
   );
 
   const onBarPointerDown = useCallback(
@@ -208,6 +218,7 @@ function Lane({
       const grabOffsetMs = timeFromClientX(e.clientX) - action.time;
 
       bar.setPointerCapture(e.pointerId);
+      onGestureStart();
       const move = (ev: PointerEvent) => {
         const t = timeFromClientX(ev.clientX);
         if (isResize) {
@@ -217,6 +228,7 @@ function Lane({
         }
       };
       const up = () => {
+        onGestureEnd();
         bar.releasePointerCapture(e.pointerId);
         window.removeEventListener("pointermove", move);
         window.removeEventListener("pointerup", up);
@@ -224,7 +236,7 @@ function Lane({
       window.addEventListener("pointermove", move);
       window.addEventListener("pointerup", up);
     },
-    [onMoveAction, onResizeAction, onSelectAction, timeFromClientX],
+    [onMoveAction, onResizeAction, onSelectAction, timeFromClientX, onGestureStart, onGestureEnd],
   );
 
   return (

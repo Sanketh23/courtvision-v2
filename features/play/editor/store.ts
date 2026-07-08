@@ -88,6 +88,10 @@ export type EditorState = {
   canUndo: () => boolean;
   canRedo: () => boolean;
 
+  // gesture coalescing — a continuous drag is ONE undo step
+  beginGesture: () => void;
+  endGesture: () => void;
+
   // persistence bookkeeping
   markSaved: (playId: string) => void;
 };
@@ -106,6 +110,11 @@ function readShowPaths(): boolean {
 
 export function createEditorStore(initialPlay: Play, playId: string | null) {
   return createStore<EditorState>((set, get) => {
+    // Transient gesture state (not reactive): while a drag is active, only the
+    // first commit pushes history, so the whole drag is a single undo step.
+    let gestureActive = false;
+    let gesturePushed = false;
+
     /** Apply a pure mutator, pushing the prior play onto the undo stack. */
     const commit = (mutate: (play: Play) => Play) => {
       const { play, past } = get();
@@ -114,9 +123,12 @@ export function createEditorStore(initialPlay: Play, playId: string | null) {
       // The ball is derived data: regenerate it from actions on every edit
       // (DATA_MODEL §3.3 — the editor never hand-writes ball positions).
       const next = withRegeneratedBall(mutated);
+      // During a drag, coalesce: push history once, then keep mutating in place.
+      const pushHistory = !gestureActive || !gesturePushed;
+      if (gestureActive) gesturePushed = true;
       set({
         play: next,
-        past: [...past, play].slice(-MAX_HISTORY),
+        past: pushHistory ? [...past, play].slice(-MAX_HISTORY) : past,
         future: [],
         isDirty: true,
       });
@@ -225,6 +237,15 @@ export function createEditorStore(initialPlay: Play, playId: string | null) {
       },
       canUndo: () => get().past.length > 0,
       canRedo: () => get().future.length > 0,
+
+      beginGesture: () => {
+        gestureActive = true;
+        gesturePushed = false;
+      },
+      endGesture: () => {
+        gestureActive = false;
+        gesturePushed = false;
+      },
 
       markSaved: (savedId) => set({ playId: savedId, isDirty: false }),
     };
